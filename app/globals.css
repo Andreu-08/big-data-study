@@ -24,3 +24,48 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ===== ESTILOS DE TABLAS PARA MODO OSCURO ===== */
+.dark-mode .glossary-card {
+  background-color: rgb(30 41 59); /* slate-800 */
+  border-color: rgb(51 65 85); /* slate-700 */
+}
+
+.dark-mode .glossary-card table {
+  border-collapse: collapse;
+}
+
+.dark-mode .glossary-card table thead tr {
+  border-color: rgb(71 85 105); /* slate-600 */
+}
+
+.dark-mode .glossary-card table thead th {
+  color: rgb(148 163 184); /* slate-400 - más visible */
+  font-weight: 600;
+  padding-bottom: 0.75rem;
+}
+
+.dark-mode .glossary-card table tbody tr {
+  border-bottom: 1px solid rgb(51 65 85); /* slate-700 */
+}
+
+.dark-mode .glossary-card table tbody tr:hover {
+  background-color: rgb(51 65 85 / 0.5); /* hover suave */
+}
+
+.dark-mode .glossary-card table td {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+/* Primera columna - conceptos */
+.dark-mode .glossary-card table td:first-child {
+  color: rgb(226 232 240); /* slate-200 - texto brillante */
+  font-weight: 500;
+}
+
+/* Segunda columna - definiciones */
+.dark-mode .glossary-card table td:last-child {
+  color: rgb(203 213 225); /* slate-300 - buen contraste */
+}
+
