@@ -1778,17 +1778,17 @@ export default function BigDataStudyApp() {
                 <table className="w-full text-xs sm:text-sm min-w-96">
                   <thead><tr className={`border-b ${darkMode ? 'border-slate-600' : 'border-slate-200'}`}><th className={`text-left py-1.5 sm:py-2 font-semibold whitespace-nowrap ${darkMode ? 'text-teal-400' : 'text-teal-700'}`}>Concepto</th><th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-teal-400' : 'text-teal-700'}`}>Definición</th></tr></thead>
                   <tbody className={`divide-y ${darkMode ? 'divide-slate-700' : 'divide-slate-100'}`}>
-                    <tr><td className="py-2 font-medium">Big Data</td><td className="py-2 text-slate-600">Conjunto de tecnologías para almacenar, procesar y analizar datos masivos que no pueden tratarse con sistemas tradicionales.</td></tr>
-                    <tr><td className="py-2 font-medium">Datos estructurados</td><td className="py-2 text-slate-600">Datos con esquema fijo (tablas, filas y columnas). Ej: SQL, Excel.</td></tr>
-                    <tr><td className="py-2 font-medium">Datos no estructurados</td><td className="py-2 text-slate-600">Datos sin formato definido. Ej: texto libre, correos, imágenes, vídeos.</td></tr>
-                    <tr><td className="py-2 font-medium">Datos semi-estructurados</td><td className="py-2 text-slate-600">Datos con cierta organización sin esquema rígido. Ej: JSON, XML.</td></tr>
-                    <tr><td className="py-2 font-medium">Volumen</td><td className="py-2 text-slate-600">Cantidad masiva de datos generados y almacenados.</td></tr>
-                    <tr><td className="py-2 font-medium">Velocidad</td><td className="py-2 text-slate-600">Rapidez con la que los datos se generan, transmiten y procesan.</td></tr>
-                    <tr><td className="py-2 font-medium">Variedad</td><td className="py-2 text-slate-600">Diversidad de formatos y fuentes de datos.</td></tr>
-                    <tr><td className="py-2 font-medium">Veracidad</td><td className="py-2 text-slate-600">Calidad y fiabilidad de los datos.</td></tr>
-                    <tr><td className="py-2 font-medium">Valor</td><td className="py-2 text-slate-600">Capacidad de los datos para generar información útil.</td></tr>
-                    <tr><td className="py-2 font-medium">Business Intelligence</td><td className="py-2 text-slate-600">Análisis descriptivo del pasado y presente para apoyar decisiones.</td></tr>
-                    <tr><td className="py-2 font-medium">Data Science</td><td className="py-2 text-slate-600">Uso de estadística y ML para análisis predictivo y prescriptivo.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Big Data</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Conjunto de tecnologías para almacenar, procesar y analizar datos masivos que no pueden tratarse con sistemas tradicionales.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Datos estructurados</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Datos con esquema fijo (tablas, filas y columnas). Ej: SQL, Excel.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Datos no estructurados</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Datos sin formato definido. Ej: texto libre, correos, imágenes, vídeos.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Datos semi-estructurados</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Datos con cierta organización sin esquema rígido. Ej: JSON, XML.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Volumen</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Cantidad masiva de datos generados y almacenados.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Velocidad</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Rapidez con la que los datos se generan, transmiten y procesan.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Variedad</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Diversidad de formatos y fuentes de datos.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Veracidad</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Calidad y fiabilidad de los datos.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Valor</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Capacidad de los datos para generar información útil.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Business Intelligence</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Análisis descriptivo del pasado y presente para apoyar decisiones.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Data Science</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Uso de estadística y ML para análisis predictivo y prescriptivo.</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -1801,18 +1801,18 @@ export default function BigDataStudyApp() {
                 <table className="w-full text-xs sm:text-sm min-w-96">
                   <thead><tr className={`border-b ${darkMode ? 'border-slate-600' : 'border-slate-200'}`}><th className={`text-left py-1.5 sm:py-2 font-semibold whitespace-nowrap ${darkMode ? 'text-blue-400' : 'text-blue-700'}`}>Concepto</th><th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-blue-400' : 'text-blue-700'}`}>Definición</th></tr></thead>
                   <tbody className={`divide-y ${darkMode ? 'divide-slate-700' : 'divide-slate-100'}`}>
-                    <tr><td className="py-2 font-medium">Arquitectura Big Data</td><td className="py-2 text-slate-600">Diseño que permite escalabilidad, tolerancia a fallos y procesamiento distribuido.</td></tr>
-                    <tr><td className="py-2 font-medium">Escalado horizontal</td><td className="py-2 text-slate-600">Aumentar capacidad añadiendo nodos (no máquinas más potentes).</td></tr>
-                    <tr><td className="py-2 font-medium">Tolerancia a fallos</td><td className="py-2 text-slate-600">Capacidad del sistema para seguir funcionando aunque fallen componentes.</td></tr>
-                    <tr><td className="py-2 font-medium">Localidad del dato</td><td className="py-2 text-slate-600">Ejecutar los cálculos donde están almacenados los datos.</td></tr>
-                    <tr><td className="py-2 font-medium">Data Warehouse</td><td className="py-2 text-slate-600">Repositorio de datos estructurados y procesados, orientado a análisis.</td></tr>
-                    <tr><td className="py-2 font-medium">Schema-on-write</td><td className="py-2 text-slate-600">El esquema se define antes de almacenar los datos.</td></tr>
-                    <tr><td className="py-2 font-medium">Data Lake</td><td className="py-2 text-slate-600">Repositorio de datos en bruto, de cualquier tipo y formato.</td></tr>
-                    <tr><td className="py-2 font-medium">Schema-on-read</td><td className="py-2 text-slate-600">El esquema se aplica en el momento de la lectura.</td></tr>
-                    <tr><td className="py-2 font-medium">Procesamiento batch</td><td className="py-2 text-slate-600">Procesamiento por lotes sobre datos históricos.</td></tr>
-                    <tr><td className="py-2 font-medium">Procesamiento streaming</td><td className="py-2 text-slate-600">Procesamiento continuo de datos en tiempo real.</td></tr>
-                    <tr><td className="py-2 font-medium">Arquitectura Lambda</td><td className="py-2 text-slate-600">Combina batch, streaming y serving para precisión y baja latencia.</td></tr>
-                    <tr><td className="py-2 font-medium">Arquitectura Kappa</td><td className="py-2 text-slate-600">Basada solo en streaming, más simple que Lambda.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Arquitectura Big Data</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Diseño que permite escalabilidad, tolerancia a fallos y procesamiento distribuido.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Escalado horizontal</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Aumentar capacidad añadiendo nodos (no máquinas más potentes).</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Tolerancia a fallos</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Capacidad del sistema para seguir funcionando aunque fallen componentes.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Localidad del dato</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Ejecutar los cálculos donde están almacenados los datos.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Data Warehouse</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Repositorio de datos estructurados y procesados, orientado a análisis.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Schema-on-write</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>El esquema se define antes de almacenar los datos.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Data Lake</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Repositorio de datos en bruto, de cualquier tipo y formato.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Schema-on-read</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>El esquema se aplica en el momento de la lectura.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Procesamiento batch</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Procesamiento por lotes sobre datos históricos.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Procesamiento streaming</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Procesamiento continuo de datos en tiempo real.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Arquitectura Lambda</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Combina batch, streaming y serving para precisión y baja latencia.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Arquitectura Kappa</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Basada solo en streaming, más simple que Lambda.</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -1825,19 +1825,19 @@ export default function BigDataStudyApp() {
                 <table className="w-full text-xs sm:text-sm min-w-96">
                   <thead><tr className={`border-b ${darkMode ? 'border-slate-600' : 'border-slate-200'}`}><th className={`text-left py-1.5 sm:py-2 font-semibold whitespace-nowrap ${darkMode ? 'text-orange-400' : 'text-orange-700'}`}>Concepto</th><th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-orange-400' : 'text-orange-700'}`}>Definición</th></tr></thead>
                   <tbody className={`divide-y ${darkMode ? 'divide-slate-700' : 'divide-slate-100'}`}>
-                    <tr><td className="py-2 font-medium">Hadoop</td><td className="py-2 text-slate-600">Framework open source para almacenamiento y procesamiento distribuido.</td></tr>
-                    <tr><td className="py-2 font-medium">Clúster</td><td className="py-2 text-slate-600">Conjunto de máquinas que trabajan como un único sistema.</td></tr>
-                    <tr><td className="py-2 font-medium">HDFS</td><td className="py-2 text-slate-600">Sistema de archivos distribuido de Hadoop.</td></tr>
-                    <tr><td className="py-2 font-medium">Bloque HDFS</td><td className="py-2 text-slate-600">Unidad mínima de almacenamiento (128 MB por defecto).</td></tr>
-                    <tr><td className="py-2 font-medium">Factor de replicación</td><td className="py-2 text-slate-600">Número de copias de cada bloque (normalmente 3).</td></tr>
-                    <tr><td className="py-2 font-medium">WORM</td><td className="py-2 text-slate-600">Write Once, Read Many: escribir una vez, leer muchas.</td></tr>
-                    <tr><td className="py-2 font-medium">NameNode</td><td className="py-2 text-slate-600">Nodo maestro que gestiona metadatos (no almacena datos).</td></tr>
-                    <tr><td className="py-2 font-medium">DataNode</td><td className="py-2 text-slate-600">Nodo que almacena físicamente los datos.</td></tr>
-                    <tr><td className="py-2 font-medium">Secondary NameNode</td><td className="py-2 text-slate-600">Ayuda a gestionar metadatos (no es backup).</td></tr>
-                    <tr><td className="py-2 font-medium">fsimage</td><td className="py-2 text-slate-600">Imagen del estado del sistema de archivos HDFS.</td></tr>
-                    <tr><td className="py-2 font-medium">edits</td><td className="py-2 text-slate-600">Registro de cambios realizados en HDFS.</td></tr>
-                    <tr><td className="py-2 font-medium">YARN</td><td className="py-2 text-slate-600">Gestor de recursos y planificación de tareas del clúster.</td></tr>
-                    <tr><td className="py-2 font-medium">MapReduce</td><td className="py-2 text-slate-600">Modelo de procesamiento distribuido por lotes.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Hadoop</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Framework open source para almacenamiento y procesamiento distribuido.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Clúster</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Conjunto de máquinas que trabajan como un único sistema.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>HDFS</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Sistema de archivos distribuido de Hadoop.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Bloque HDFS</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Unidad mínima de almacenamiento (128 MB por defecto).</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Factor de replicación</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Número de copias de cada bloque (normalmente 3).</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>WORM</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Write Once, Read Many: escribir una vez, leer muchas.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>NameNode</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Nodo maestro que gestiona metadatos (no almacena datos).</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>DataNode</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Nodo que almacena físicamente los datos.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Secondary NameNode</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Ayuda a gestionar metadatos (no es backup).</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>fsimage</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Imagen del estado del sistema de archivos HDFS.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>edits</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Registro de cambios realizados en HDFS.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>YARN</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Gestor de recursos y planificación de tareas del clúster.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>MapReduce</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Modelo de procesamiento distribuido por lotes.</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -1850,14 +1850,14 @@ export default function BigDataStudyApp() {
                 <table className="w-full text-xs sm:text-sm min-w-96">
                   <thead><tr className={`border-b ${darkMode ? 'border-slate-600' : 'border-slate-200'}`}><th className={`text-left py-2 font-semibold ${darkMode ? 'text-purple-400' : 'text-purple-700'}`}>Concepto</th><th className={`text-left py-2 font-semibold ${darkMode ? 'text-purple-400' : 'text-purple-700'}`}>Definición</th></tr></thead>
                   <tbody className={`divide-y ${darkMode ? 'divide-slate-700' : 'divide-slate-100'}`}>
-                    <tr><td className="py-2 font-medium">Base de datos</td><td className="py-2 text-slate-600">Conjunto organizado de datos relacionados.</td></tr>
-                    <tr><td className="py-2 font-medium">SGBD</td><td className="py-2 text-slate-600">Software que permite crear, gestionar y consultar bases de datos.</td></tr>
-                    <tr><td className="py-2 font-medium">Modelo relacional</td><td className="py-2 text-slate-600">Organización de datos en tablas relacionadas mediante claves.</td></tr>
-                    <tr><td className="py-2 font-medium">NoSQL</td><td className="py-2 text-slate-600">Bases de datos sin esquema rígido, escalables horizontalmente.</td></tr>
-                    <tr><td className="py-2 font-medium">SQL</td><td className="py-2 text-slate-600">Lenguaje para definir, manipular y consultar datos.</td></tr>
-                    <tr><td className="py-2 font-medium">DDL</td><td className="py-2 text-slate-600">Lenguaje de definición de datos (CREATE, DROP).</td></tr>
-                    <tr><td className="py-2 font-medium">DML</td><td className="py-2 text-slate-600">Lenguaje de manipulación de datos (INSERT, UPDATE, DELETE).</td></tr>
-                    <tr><td className="py-2 font-medium">DQL</td><td className="py-2 text-slate-600">Lenguaje de consulta de datos (SELECT).</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Base de datos</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Conjunto organizado de datos relacionados.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>SGBD</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Software que permite crear, gestionar y consultar bases de datos.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Modelo relacional</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Organización de datos en tablas relacionadas mediante claves.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>NoSQL</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Bases de datos sin esquema rígido, escalables horizontalmente.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>SQL</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Lenguaje para definir, manipular y consultar datos.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>DDL</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Lenguaje de definición de datos (CREATE, DROP).</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>DML</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Lenguaje de manipulación de datos (INSERT, UPDATE, DELETE).</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>DQL</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Lenguaje de consulta de datos (SELECT).</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -1870,15 +1870,15 @@ export default function BigDataStudyApp() {
                 <table className="w-full text-xs sm:text-sm min-w-96">
                   <thead><tr className={`border-b ${darkMode ? 'border-slate-600' : 'border-slate-200'}`}><th className={`text-left py-1.5 sm:py-2 font-semibold whitespace-nowrap ${darkMode ? 'text-rose-400' : 'text-rose-700'}`}>Concepto</th><th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-rose-400' : 'text-rose-700'}`}>Definición</th></tr></thead>
                   <tbody className={`divide-y ${darkMode ? 'divide-slate-700' : 'divide-slate-100'}`}>
-                    <tr><td className="py-2 font-medium">Hive</td><td className="py-2 text-slate-600">Sistema de data warehouse sobre Hadoop con lenguaje similar a SQL.</td></tr>
-                    <tr><td className="py-2 font-medium">HiveQL</td><td className="py-2 text-slate-600">Lenguaje de consultas utilizado por Hive.</td></tr>
-                    <tr><td className="py-2 font-medium">Metastore</td><td className="py-2 text-slate-600">Repositorio central de metadatos de Hive.</td></tr>
-                    <tr><td className="py-2 font-medium">Tabla interna (managed)</td><td className="py-2 text-slate-600">Hive gestiona datos y metadatos; DROP TABLE borra los datos.</td></tr>
-                    <tr><td className="py-2 font-medium">Tabla externa (external)</td><td className="py-2 text-slate-600">Hive gestiona solo metadatos; DROP TABLE no borra los datos.</td></tr>
-                    <tr><td className="py-2 font-medium">Warehouse de Hive</td><td className="py-2 text-slate-600">Directorio donde Hive almacena las tablas internas.</td></tr>
-                    <tr><td className="py-2 font-medium">ARRAY</td><td className="py-2 text-slate-600">Tipo complejo que almacena listas ordenadas.</td></tr>
-                    <tr><td className="py-2 font-medium">MAP</td><td className="py-2 text-slate-600">Tipo complejo que almacena pares clave-valor.</td></tr>
-                    <tr><td className="py-2 font-medium">STRUCT</td><td className="py-2 text-slate-600">Tipo complejo que agrupa varios campos con nombre.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Hive</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Sistema de data warehouse sobre Hadoop con lenguaje similar a SQL.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>HiveQL</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Lenguaje de consultas utilizado por Hive.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Metastore</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Repositorio central de metadatos de Hive.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Tabla interna (managed)</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Hive gestiona datos y metadatos; DROP TABLE borra los datos.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Tabla externa (external)</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Hive gestiona solo metadatos; DROP TABLE no borra los datos.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Warehouse de Hive</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Directorio donde Hive almacena las tablas internas.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>ARRAY</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Tipo complejo que almacena listas ordenadas.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>MAP</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Tipo complejo que almacena pares clave-valor.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>STRUCT</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Tipo complejo que agrupa varios campos con nombre.</td></tr>
                   </tbody>
                 </table>
               </div>
