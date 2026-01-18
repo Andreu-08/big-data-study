@@ -778,107 +778,194 @@ ON e.id = d.id;`
     title: "6. Práctica",
     content: [
       {
-        subtitle: "0. Flujo general del examen",
-        text: "Si sigues este orden NUNCA te pierdes. Es la clave para aprobar el examen práctico.",
+        subtitle: "🎯 OBJETIVO DE ESTA GUÍA",
+        text: "Esta guía práctica te enseña exactamente qué hacer en el examen, paso a paso. Memoriza el flujo y nunca te perderás.",
         list: [
-          "1️⃣ VER DATOS: Explora qué hay en HDFS.",
-          "2️⃣ PREPARAR HDFS: Crea directorios y sube archivos.",
-          "3️⃣ CREAR TABLA: Define la estructura en Hive.",
-          "4️⃣ CARGAR DATOS: Conecta la tabla con los datos.",
-          "5️⃣ CONSULTAR: Ejecuta las consultas del enunciado."
+          "✅ Saber qué arrancar y en qué orden",
+          "✅ Qué comando usar en cada momento",
+          "✅ Cómo comprobar que cada paso funciona",
+          "✅ Evitar errores típicos de examen"
         ],
-        keyPoint: "Flujo: Ver datos → Preparar HDFS → Crear tabla → Cargar datos → Consultar"
+        keyPoint: "FLUJO COMPLETO: su - hadoop → SSH → start-dfs.sh → start-yarn.sh → HDFS → MapReduce (si piden) → Hive → Create Table → Load Data → Select"
       },
       {
-        subtitle: "1.1 HDFS: Ver qué hay",
-        text: "SIEMPRE empieza aquí. Antes de hacer nada, mira qué hay en HDFS.",
+        subtitle: "0️⃣ PASO CERO: Entrar en el entorno correcto",
+        text: "⚠️ SIEMPRE trabajar con el usuario hadoop. Si no haces esto primero, TODO lo demás fallará.",
         isCode: true,
-        codeBlock: `# Ver raíz de HDFS
+        codeBlock: `# CAMBIAR AL USUARIO HADOOP (OBLIGATORIO)
+su - hadoop
+
+# COMPROBACIÓN INMEDIATA
+whoami
+
+# Debe devolver:
+# hadoop
+
+# ❌ Si devuelve otro usuario → NO sigas, repite su - hadoop`,
+        keyPoint: "REGLA DE ORO: Si whoami no devuelve 'hadoop', NADA funcionará después."
+      },
+      {
+        subtitle: "1️⃣ COMPROBAR Y ARRANCAR SSH",
+        text: "Hadoop necesita SSH para funcionar, incluso en una sola máquina. Este paso es OBLIGATORIO antes de arrancar Hadoop.",
+        isCode: true,
+        codeBlock: `# 1. COMPROBAR SI SSH FUNCIONA
+ssh localhost
+
+# ✅ Si entra sin pedir contraseña → OK, escribe 'exit' y continúa
+# ❌ Si da error → hay que arrancar SSH
+
+# Salir de la sesión SSH
+exit
+
+# 2. ARRANCAR SSH (si dio error antes)
+sudo service ssh start
+
+# 3. VOLVER A PROBAR
+ssh localhost
+exit`,
+        keyPoint: "IDEA CLAVE EXAMEN: Si Hadoop no arranca → piensa PRIMERO en SSH."
+      },
+      {
+        subtitle: "2️⃣ ARRANCAR HADOOP (PASO CRÍTICO)",
+        text: "⚠️ NADA funciona si esto no está arrancado. Hay que arrancar HDFS y YARN en ese orden.",
+        isCode: true,
+        codeBlock: `# PASO 1: ARRANCAR HDFS
+start-dfs.sh
+
+# Esto arranca:
+# - NameNode (maestro de metadatos)
+# - DataNode (almacena datos)
+# - SecondaryNameNode (ayuda con metadatos)
+
+# PASO 2: ARRANCAR YARN
+start-yarn.sh
+
+# Esto arranca:
+# - ResourceManager (gestiona recursos)
+# - NodeManager (ejecuta tareas)`,
+        keyPoint: "ORDEN: Primero start-dfs.sh, después start-yarn.sh. NUNCA al revés."
+      },
+      {
+        subtitle: "2.1 COMPROBACIÓN OBLIGATORIA: jps",
+        text: "Después de arrancar, SIEMPRE ejecuta jps para verificar que todo está funcionando. Si falta algún proceso, NO sigas adelante.",
+        isCode: true,
+        codeBlock: `# COMPROBACIÓN OBLIGATORIA
+jps
+
+# DEBE APARECER MÍNIMO:
+# NameNode
+# DataNode
+# SecondaryNameNode
+# ResourceManager
+# NodeManager
+
+# ❌ Si falta alguno → NO SIGAS
+# Reinicia con stop-all.sh y vuelve a arrancar`,
+        keyPoint: "Si jps no muestra los 5 procesos, el examen NO va a funcionar."
+      },
+      {
+        subtitle: "3️⃣ HDFS: Ver qué hay",
+        text: "SIEMPRE empieza explorando HDFS. Mira qué datos hay antes de hacer nada.",
+        isCode: true,
+        codeBlock: `# VER LA RAÍZ DE HDFS
 hdfs dfs -ls /
 
-# Si el enunciado dice "trabaja en /practicas"
+# SI EL ENUNCIADO DICE "trabaja en /practicas"
 hdfs dfs -ls /practicas
 
-# Ver contenido de un archivo (comprobar separador)
-hdfs dfs -head /practicas/fichero.csv`
+# VER PRIMERAS LÍNEAS (para conocer el separador)
+hdfs dfs -head /practicas/fichero.csv
+
+# Esto te dice el separador:
+# nombre,edad,salario → separador es ','
+# nombre;edad;salario → separador es ';'
+# espacios grandes    → separador es '\\t' (tabulador)`,
+        keyPoint: "El separador que veas en -head es el que usarás en FIELDS TERMINATED BY"
       },
       {
-        subtitle: "1.2 HDFS: Crear directorio",
-        text: "Solo si el enunciado lo pide o necesitas organizar los datos.",
+        subtitle: "3.1 HDFS: Crear directorio",
+        text: "Solo si el enunciado lo pide o necesitas organizar datos.",
         isCode: true,
-        codeBlock: `# Crear directorio (con -p crea padres si no existen)
+        codeBlock: `# CREAR DIRECTORIO (con -p crea padres si no existen)
 hdfs dfs -mkdir -p /practicas
 
-# Verificar que se creó
+# VERIFICAR QUE SE CREÓ
 hdfs dfs -ls /`
       },
       {
-        subtitle: "1.3 HDFS: Subir datos (CASI SIEMPRE)",
-        text: "Paso crítico. Los datos deben estar en HDFS antes de usarlos en Hive.",
+        subtitle: "3.2 HDFS: Subir ficheros",
+        text: "Los datos DEBEN estar en HDFS antes de usarlos en Hive. Paso crítico.",
         isCode: true,
-        codeBlock: `# Subir archivo a HDFS (-f sobrescribe si existe)
+        codeBlock: `# SUBIR ARCHIVO A HDFS (-f sobrescribe si existe)
 hdfs dfs -put -f fichero.csv /practicas/
 
-# VERIFICAR SIEMPRE que el archivo está
-hdfs dfs -ls /practicas`,
-        keyPoint: "Regla de oro: NUNCA pases a Hive sin comprobar que el fichero está en HDFS."
-      },
-      {
-        subtitle: "1.4 HDFS: Comprobar separador",
-        text: "Antes de crear la tabla, mira qué separador usa el CSV (coma, punto y coma, tabulador).",
-        isCode: true,
-        codeBlock: `# Ver las primeras líneas del archivo
-hdfs dfs -head /practicas/fichero.csv
+# COMPROBACIÓN OBLIGATORIA
+hdfs dfs -ls /practicas
 
-# Si ves: nombre,edad,salario → separador es ','
-# Si ves: nombre;edad;salario → separador es ';'
-# Si ves espacios grandes → separador es '\\t' (tabulador)`
+# ⚠️ Si el archivo no aparece aquí, Hive NO lo encontrará`,
+        keyPoint: "REGLA DE ORO: NUNCA pases a Hive sin comprobar que el fichero está en HDFS."
       },
       {
-        subtitle: "2. Entrar en Hive",
-        text: "Una vez los datos están en HDFS, entra en Hive para crear tablas y consultar.",
+        subtitle: "4️⃣ MAPREDUCE (si lo piden en el examen)",
+        text: "MapReduce necesita YARN arrancado. Solo haz esto si el enunciado lo pide explícitamente.",
         isCode: true,
-        codeBlock: `# Desde terminal Ubuntu
+        codeBlock: `# EJEMPLO: WORDCOUNT TÍPICO
+hadoop jar /opt/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar \\
+wordcount /practicas/fichero.txt /practicas/resultado
+
+# VER RESULTADO
+hdfs dfs -ls /practicas/resultado
+hdfs dfs -cat /practicas/resultado/part-r-00000 | head
+
+# ❌ ERROR TÍPICO: El directorio de salida YA EXISTE
+# SOLUCIÓN: Borrarlo primero
+hdfs dfs -rm -r /practicas/resultado`,
+        keyPoint: "El directorio de salida de MapReduce NO puede existir previamente."
+      },
+      {
+        subtitle: "5️⃣ ENTRAR EN HIVE",
+        text: "⚠️ Siempre DESPUÉS de tener HDFS + YARN arrancados y los datos subidos.",
+        isCode: true,
+        codeBlock: `# ENTRAR EN HIVE
 hive
 
 # Verás el prompt:
 # hive>
 
-# Ver bases de datos disponibles
+# VER BASES DE DATOS
 SHOW DATABASES;
 
-# Si el examen pide una base concreta
+# SI EL EXAMEN PIDE UNA BASE CONCRETA
 USE examen;
 
-# Si no dice nada, trabaja en 'default' (no pasa nada)
+# SI NO DICE NADA → usa 'default' (no pasa nada)
 
-# Ver tablas existentes
+# VER TABLAS EXISTENTES
 SHOW TABLES;`
       },
       {
-        subtitle: "3.1 Crear tabla: ¿INTERNA o EXTERNA?",
-        text: "Decisión crítica. Elige mal y puedes perder los datos.",
+        subtitle: "6️⃣ CREAR TABLAS: ¿INTERNA o EXTERNA?",
+        text: "Esta es la decisión más importante del examen. MEMORIZA esta tabla:",
         comparison: {
           left: "Usar EXTERNA cuando...",
           right: "Usar INTERNA cuando...",
-          leftDesc: "Los datos YA están en HDFS. Te dicen 'no borrar datos'. Es lo MÁS SEGURO.",
-          rightDesc: "Cargas desde LOCAL. No especifican nada. Quieres que Hive gestione todo."
+          leftDesc: "• Datos YA están en HDFS\n• El enunciado dice 'no borrar datos'\n• Usas LOCATION\n• EN CASO DE DUDA → EXTERNA",
+          rightDesc: "• Cargas desde LOCAL (LOAD DATA LOCAL)\n• No especifican nada concreto\n• Quieres que Hive gestione todo"
         },
-        keyPoint: "En caso de duda, usa EXTERNA. Es más seguro."
+        keyPoint: "En caso de duda, usa EXTERNA. Es más seguro y no borra datos."
       },
       {
-        subtitle: "3.2 Plantilla: Tabla INTERNA",
-        text: "Memoriza esta estructura. Hive gestiona datos y metadatos.",
+        subtitle: "6.1 Plantilla: TABLA INTERNA",
+        text: "Hive gestiona datos Y metadatos. DROP TABLE = BORRA LOS DATOS.",
         isCode: true,
         codeBlock: `CREATE TABLE tabla (
-  col1 TIPO,
-  col2 TIPO,
-  col3 TIPO
+  col1 STRING,
+  col2 INT
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ',';
 
--- Ejemplo real:
+-- EJEMPLO REAL:
 CREATE TABLE empleados (
   nombre STRING,
   edad INT,
@@ -888,19 +975,18 @@ ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ',';`
       },
       {
-        subtitle: "3.3 Plantilla: Tabla EXTERNA (MUY TÍPICA)",
-        text: "Memoriza esta estructura. LOCATION apunta al DIRECTORIO, no al archivo.",
+        subtitle: "6.2 Plantilla: TABLA EXTERNA (MUY TÍPICA)",
+        text: "Hive solo gestiona metadatos. DROP TABLE = NO borra los datos. LOCATION apunta al DIRECTORIO, no al archivo.",
         isCode: true,
         codeBlock: `CREATE EXTERNAL TABLE tabla (
-  col1 TIPO,
-  col2 TIPO,
-  col3 TIPO
+  col1 STRING,
+  col2 INT
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 LOCATION '/practicas';
 
--- Ejemplo real:
+-- EJEMPLO REAL:
 CREATE EXTERNAL TABLE empleados_ext (
   nombre STRING,
   edad INT,
@@ -909,90 +995,99 @@ CREATE EXTERNAL TABLE empleados_ext (
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 LOCATION '/practicas/empleados';`,
-        keyPoint: "LOCATION siempre apunta al DIRECTORIO, NO al fichero."
+        keyPoint: "LOCATION → siempre DIRECTORIO, nunca fichero. Error típico de examen."
       },
       {
-        subtitle: "3.4 Comprobar estructura de tabla",
-        text: "Verifica que la tabla se creó correctamente antes de cargar datos.",
+        subtitle: "6.3 Comprobar estructura de tabla",
+        text: "Verifica que la tabla se creó correctamente.",
         isCode: true,
-        codeBlock: `-- Ver estructura de la tabla
+        codeBlock: `-- VER ESTRUCTURA
 DESCRIBE tabla;
 
--- Ver información extendida
+-- VER INFORMACIÓN EXTENDIDA
 DESCRIBE EXTENDED tabla;
 
--- Ver todas las tablas
+-- VER TODAS LAS TABLAS
 SHOW TABLES;`
       },
       {
-        subtitle: "4.1 Cargar datos: Desde HDFS",
-        text: "Si los datos YA están en HDFS, NO uses LOCAL. El archivo se MUEVE.",
+        subtitle: "7️⃣ CARGAR DATOS EN HIVE",
+        text: "Hay dos casos muy distintos. Memoriza cuál usar en cada situación.",
+        comparison: {
+          left: "CASO A: Datos en HDFS",
+          right: "CASO B: Datos en LOCAL",
+          leftDesc: "NO uses LOCAL\nEl archivo se MUEVE (desaparece de origen)\nLOAD DATA INPATH '/hdfs/ruta' INTO TABLE tabla;",
+          rightDesc: "USA LOCAL\nEl archivo se COPIA (permanece en origen)\nLOAD DATA LOCAL INPATH '/home/hadoop/fichero.csv' INTO TABLE tabla;"
+        }
+      },
+      {
+        subtitle: "7.1 Cargar desde HDFS",
         isCode: true,
-        codeBlock: `-- Datos YA en HDFS → NO uses LOCAL
+        codeBlock: `-- DATOS YA EN HDFS → NO uses LOCAL
 LOAD DATA INPATH '/practicas/fichero.csv'
 INTO TABLE tabla;
 
--- ⚠️ IMPORTANTE: Esto MUEVE el archivo, no lo copia
--- El archivo desaparece de /practicas/`,
-        keyPoint: "Sin LOCAL = el archivo se MUEVE a la tabla."
+-- ⚠️ IMPORTANTE: El archivo se MUEVE, no se copia
+-- El archivo DESAPARECE de /practicas/`
       },
       {
-        subtitle: "4.2 Cargar datos: Desde LOCAL",
-        text: "Si los datos están en el sistema de archivos local (no HDFS), USA LOCAL.",
+        subtitle: "7.2 Cargar desde LOCAL",
         isCode: true,
-        codeBlock: `-- Datos en LOCAL → USA LOCAL
+        codeBlock: `-- DATOS EN LOCAL → USA LOCAL
 LOAD DATA LOCAL INPATH '/home/hadoop/fichero.csv'
 INTO TABLE tabla;
 
--- ⚠️ IMPORTANTE: Esto COPIA el archivo a HDFS
--- El archivo original permanece en local`,
-        keyPoint: "Con LOCAL = el archivo se COPIA a HDFS."
+-- ⚠️ IMPORTANTE: El archivo se COPIA a HDFS
+-- El archivo original PERMANECE en local`
       },
       {
-        subtitle: "4.3 Comprobación OBLIGATORIA",
-        text: "SIEMPRE verifica que los datos cargaron correctamente. Si da 0, algo está mal.",
+        subtitle: "7.3 COMPROBACIÓN OBLIGATORIA",
+        text: "SIEMPRE verifica después de cargar. Si COUNT(*) da 0, algo está mal.",
         isCode: true,
-        codeBlock: `-- COMPROBACIÓN OBLIGATORIA después de cargar
+        codeBlock: `-- COMPROBACIÓN OBLIGATORIA
 SELECT COUNT(*) FROM tabla;
 
--- Si da 0, revisa:
+-- ❌ SI DA 0, REVISA:
 -- 1. ¿La ruta era correcta?
--- 2. ¿El separador es el correcto?
+-- 2. ¿El separador es el correcto? (, vs ; vs \\t)
 -- 3. ¿Los tipos coinciden con los datos?
 
--- Ver algunos registros para verificar
+-- VER ALGUNOS REGISTROS
 SELECT * FROM tabla LIMIT 5;`,
-        keyPoint: "Si COUNT(*) da 0 → algo está mal (ruta, separador, tipos)."
+        keyPoint: "Si COUNT(*) da 0 → separador incorrecto, ruta incorrecta, o tipos mal definidos."
       },
       {
-        subtitle: "5.1 Consultas: Orden de prueba",
+        subtitle: "8️⃣ CONSULTAS (ORDEN SEGURO)",
         text: "Siempre prueba en este orden antes de hacer consultas complejas.",
         isCode: true,
-        codeBlock: `-- 1. Primero, verifica que hay datos
-SELECT COUNT(*) FROM tabla;
-
--- 2. Luego, mira algunos registros
+        codeBlock: `-- 1. PRIMERO: Verificar que hay datos
 SELECT * FROM tabla LIMIT 5;
 
--- 3. Ya puedes hacer lo que pida el enunciado
+-- 2. DESPUÉS: Las consultas del enunciado
 SELECT col1, col2 FROM tabla WHERE condicion;
+
+-- 3. AGRUPACIONES
 SELECT col1, COUNT(*) FROM tabla GROUP BY col1;
+
+-- 4. ORDENAR
 SELECT * FROM tabla ORDER BY col1;`
       },
       {
-        subtitle: "5.2 Consultas: JOINs (MUY TÍPICO)",
-        text: "Unir dos tablas es muy común en el examen. Revisa tipos si no hay resultados.",
+        subtitle: "9️⃣ JOIN (MUY TÍPICO EN EXAMEN)",
+        text: "Unir dos tablas es muy común. Si no hay resultados, revisa que los tipos coincidan.",
         isCode: true,
-        codeBlock: `-- JOIN básico
+        codeBlock: `-- JOIN BÁSICO
 SELECT a.col, b.col
 FROM tabla1 a
 JOIN tabla2 b
 ON a.id = b.id;
 
--- Si no hay resultados, revisa:
+-- ❌ SI NO HAY RESULTADOS, REVISA:
 -- 1. ¿Los tipos coinciden? (INT vs STRING)
 SELECT DISTINCT id FROM tabla1 LIMIT 10;
 SELECT DISTINCT id FROM tabla2 LIMIT 10;
+
+-- 2. ¿Los valores existen en ambas tablas?
 
 -- LEFT JOIN (mantiene todos de la izquierda)
 SELECT a.col, b.col
@@ -1001,49 +1096,86 @@ LEFT JOIN tabla2 b
 ON a.id = b.id;`
       },
       {
-        subtitle: "6. Borrar y rehacer (SIN MIEDO)",
-        text: "Si algo sale mal, puedes borrar y empezar de nuevo. Pero cuidado con las internas.",
+        subtitle: "🔁 BORRAR Y REHACER",
+        text: "Si algo sale mal, puedes borrar y empezar de nuevo. Pero CUIDADO con las internas.",
         isCode: true,
-        codeBlock: `-- Borrar tabla
+        codeBlock: `-- BORRAR TABLA
 DROP TABLE tabla;
 
--- ⚠️ Si es INTERNA → BORRA los datos
--- ⚠️ Si es EXTERNA → NO borra los datos (solo metadatos)
+-- ⚠️ INTERNA → BORRA los datos
+-- ⚠️ EXTERNA → NO borra los datos (solo metadatos)
 
--- Borrar base de datos (debe estar vacía)
-DROP DATABASE mibase;
-
--- Forzar borrado de base de datos con tablas
-DROP DATABASE mibase CASCADE;`
+-- BORRAR DIRECTORIO EN HDFS (si necesitas rehacerlo)
+hdfs dfs -rm -r /practicas/resultado`,
+        comparison: {
+          left: "Tabla INTERNA",
+          right: "Tabla EXTERNA",
+          leftDesc: "DROP TABLE = ✅ BORRA los datos",
+          rightDesc: "DROP TABLE = ❌ NO borra los datos"
+        }
       },
       {
-        subtitle: "7. Errores típicos del examen",
+        subtitle: "🧠 RESUMEN VISUAL DEL FLUJO",
+        text: "Memoriza este flujo. Es tu mapa del examen.",
+        isCode: true,
+        codeBlock: `# FLUJO COMPLETO DEL EXAMEN
+# ─────────────────────────────
+
+su - hadoop          # 0. Cambiar usuario
+    ↓
+ssh localhost        # 1. Comprobar SSH
+    ↓
+start-dfs.sh         # 2. Arrancar HDFS
+    ↓
+start-yarn.sh        # 3. Arrancar YARN
+    ↓
+jps                  # 4. Verificar procesos
+    ↓
+hdfs dfs -ls /       # 5. Explorar HDFS
+    ↓
+hdfs dfs -put ...    # 6. Subir datos
+    ↓
+hive                 # 7. Entrar en Hive
+    ↓
+CREATE TABLE ...     # 8. Crear tabla
+    ↓
+LOAD DATA ...        # 9. Cargar datos
+    ↓
+SELECT COUNT(*) ...  # 10. Verificar
+    ↓
+SELECT ...           # 11. Consultas`
+      },
+      {
+        subtitle: "❌ ERRORES TÍPICOS DEL EXAMEN",
         text: "Lista de errores que DEBES evitar. Repásalos antes del examen.",
         list: [
-          "Usar comandos Linux (ls) en lugar de HDFS (hdfs dfs -ls).",
-          "No verificar que el archivo está en HDFS antes de ir a Hive.",
-          "Olvidar ROW FORMAT DELIMITED → todo sale NULL.",
-          "Usar el separador incorrecto (, vs ; vs \\t).",
-          "LOCATION apuntando al archivo en vez del directorio.",
-          "Borrar tabla INTERNA sin querer → pierdes los datos.",
-          "No hacer SELECT COUNT(*) para verificar la carga.",
-          "JOIN sin resultados por tipos diferentes (INT vs STRING)."
+          "❌ No hacer su - hadoop al principio → nada funciona",
+          "❌ No arrancar SSH → Hadoop no arranca",
+          "❌ No comprobar jps → no sabes si hay procesos activos",
+          "❌ Usar comandos Linux (ls) en lugar de HDFS (hdfs dfs -ls)",
+          "❌ No verificar que el archivo está en HDFS antes de Hive",
+          "❌ Olvidar ROW FORMAT DELIMITED → todo sale NULL",
+          "❌ Usar el separador incorrecto (, vs ; vs \\t)",
+          "❌ LOCATION apuntando al archivo en vez del directorio",
+          "❌ Borrar tabla INTERNA sin querer → pierdes los datos",
+          "❌ No hacer SELECT COUNT(*) para verificar la carga",
+          "❌ JOIN sin resultados por tipos diferentes (INT vs STRING)",
+          "❌ Directorio de salida de MapReduce que ya existe"
         ]
       },
       {
-        subtitle: "8. Tipos de datos más usados",
-        text: "Referencia rápida de los tipos que usarás en el examen.",
+        subtitle: "📋 TIPOS DE DATOS MÁS USADOS",
+        text: "Referencia rápida para crear tablas.",
         list: [
-          "STRING: Texto (nombre, dirección, descripción).",
-          "INT: Números enteros (edad, cantidad, id).",
-          "DOUBLE: Números decimales (precio, salario, porcentaje).",
-          "BIGINT: Enteros grandes (timestamps, ids largos).",
-          "BOOLEAN: Verdadero/Falso (activo, verificado)."
+          "STRING → Texto (nombre, dirección, descripción)",
+          "INT → Números enteros (edad, cantidad, id)",
+          "DOUBLE → Números decimales (precio, salario, porcentaje)",
+          "BIGINT → Enteros grandes (timestamps, ids largos)",
+          "BOOLEAN → Verdadero/Falso (activo, verificado)"
         ]
       },
       {
-        subtitle: "9. Resumen de comandos HDFS",
-        text: "Todos los comandos HDFS que necesitas para el examen.",
+        subtitle: "📝 RESUMEN COMANDOS HDFS",
         isCode: true,
         codeBlock: `hdfs dfs -ls /ruta        # Listar contenido
 hdfs dfs -mkdir -p /dir   # Crear directorio
@@ -1055,8 +1187,7 @@ hdfs dfs -rm /archivo     # Borrar archivo
 hdfs dfs -rm -r /dir      # Borrar directorio`
       },
       {
-        subtitle: "10. Resumen de comandos Hive",
-        text: "Todos los comandos Hive que necesitas para el examen.",
+        subtitle: "📝 RESUMEN COMANDOS HIVE",
         isCode: true,
         codeBlock: `SHOW DATABASES;           -- Ver bases de datos
 USE database;             -- Usar base de datos
@@ -1069,19 +1200,38 @@ SELECT * FROM tabla;                  -- Consultar
 DROP TABLE tabla;                     -- Borrar`
       },
       {
-        subtitle: "11. Checklist pre-examen",
-        text: "Revisa esto 5 minutos antes de empezar el examen.",
+        subtitle: "✅ CHECKLIST PRE-EXAMEN",
+        text: "Revisa esto 5 minutos antes de empezar.",
         list: [
-          "✅ Sé el flujo: Ver → Preparar → Crear → Cargar → Consultar.",
-          "✅ Todos los comandos HDFS empiezan por 'hdfs dfs'.",
-          "✅ Siempre verifico con -ls que los archivos están.",
-          "✅ Miro el separador con -head antes de crear la tabla.",
-          "✅ EXTERNA = datos seguros. INTERNA = datos en riesgo.",
-          "✅ LOCATION apunta a directorio, no a archivo.",
-          "✅ LOCAL = copia desde local. Sin LOCAL = mueve desde HDFS.",
-          "✅ Siempre hago SELECT COUNT(*) después de cargar."
+          "✅ Empiezo con su - hadoop",
+          "✅ Compruebo SSH con ssh localhost",
+          "✅ Arranco con start-dfs.sh y start-yarn.sh",
+          "✅ Verifico con jps (5 procesos)",
+          "✅ Todos los comandos HDFS empiezan por 'hdfs dfs'",
+          "✅ Siempre verifico con -ls que los archivos están",
+          "✅ Miro el separador con -head antes de crear la tabla",
+          "✅ EXTERNA = datos seguros. INTERNA = datos en riesgo",
+          "✅ LOCATION apunta a directorio, no a archivo",
+          "✅ LOCAL = copia desde local. Sin LOCAL = mueve desde HDFS",
+          "✅ Siempre hago SELECT COUNT(*) después de cargar"
         ],
-        keyPoint: "Si sigues el flujo y verificas cada paso, aprobarás."
+        keyPoint: "Si sigues el flujo y verificas cada paso, aprobarás el examen."
+      },
+      {
+        subtitle: "🎯 CONSEJO FINAL DE EXAMEN",
+        text: "Si algo falla, NO improvises. Sigue estos tres pasos de diagnóstico:",
+        isCode: true,
+        codeBlock: `# SI ALGO FALLA, HAZ ESTO:
+
+# 1. ¿Están los procesos activos?
+jps
+
+# 2. ¿Están los datos en HDFS?
+hdfs dfs -ls /ruta
+
+# 3. ¿Cargó bien la tabla?
+SELECT COUNT(*) FROM tabla;`,
+        keyPoint: "Diagnóstico: 1️⃣ jps → 2️⃣ hdfs dfs -ls → 3️⃣ SELECT COUNT(*)"
       }
     ]
   }
@@ -1881,40 +2031,162 @@ export default function BigDataStudyApp() {
               </div>
             </div>
 
+            {/* GLOSARIO TEMA 6 - PRÁCTICA */}
+            <div className={`glossary-card sm:shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+              <div className="bg-emerald-600 text-white px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base">TEMA 6 · PRÁCTICA - ARRANQUE Y SISTEMA</div>
+              <div className="p-2 sm:p-4 overflow-x-auto">
+                <table className="w-full text-xs sm:text-sm min-w-96">
+                  <thead><tr className={`border-b ${darkMode ? 'border-slate-600' : 'border-slate-200'}`}><th className={`text-left py-1.5 sm:py-2 font-semibold whitespace-nowrap ${darkMode ? 'text-emerald-400' : 'text-emerald-700'}`}>Concepto</th><th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-emerald-400' : 'text-emerald-700'}`}>Definición</th></tr></thead>
+                  <tbody className={`divide-y ${darkMode ? 'divide-slate-700' : 'divide-slate-100'}`}>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>su - hadoop</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Comando para cambiar al usuario hadoop. OBLIGATORIO antes de cualquier operación.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>whoami</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Muestra el usuario actual. Debe devolver &apos;hadoop&apos;.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>ssh localhost</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Comprueba que SSH funciona. Hadoop necesita SSH incluso en local.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>start-dfs.sh</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Arranca HDFS: NameNode, DataNode y SecondaryNameNode.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>start-yarn.sh</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Arranca YARN: ResourceManager y NodeManager.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>stop-all.sh</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Para todos los servicios de Hadoop (HDFS + YARN).</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>jps</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Lista los procesos Java activos. Debe mostrar 5 procesos de Hadoop.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>ResourceManager</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Proceso de YARN que gestiona recursos del clúster.</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>NodeManager</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Proceso de YARN que ejecuta tareas en cada nodo.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* TABLA COMPARATIVA - INTERNA VS EXTERNA */}
+            <div className={`glossary-card sm:shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+              <div className="bg-amber-600 text-white px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base">⚖️ COMPARATIVA: TABLA INTERNA vs EXTERNA</div>
+              <div className="p-2 sm:p-4 overflow-x-auto">
+                <table className="w-full text-xs sm:text-sm min-w-96">
+                  <thead><tr className={`border-b ${darkMode ? 'border-slate-600' : 'border-slate-200'}`}>
+                    <th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-amber-400' : 'text-amber-700'}`}>Aspecto</th>
+                    <th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-teal-400' : 'text-teal-700'}`}>INTERNA (Managed)</th>
+                    <th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-purple-400' : 'text-purple-700'}`}>EXTERNA (External)</th>
+                  </tr></thead>
+                  <tbody className={`divide-y ${darkMode ? 'divide-slate-700' : 'divide-slate-100'}`}>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Hive gestiona</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Datos + Metadatos</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Solo Metadatos</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>DROP TABLE</td><td className={`py-2 text-red-500 font-bold`}>BORRA los datos</td><td className={`py-2 text-green-500 font-bold`}>NO borra los datos</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Ubicación datos</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>/user/hive/warehouse/</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Cualquier ruta HDFS (LOCATION)</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Uso típico</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>LOAD DATA LOCAL</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Datos ya en HDFS</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Seguridad</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>⚠️ Riesgo de pérdida</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>✅ Más seguro</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>En caso de duda</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>-</td><td className={`py-2 text-green-500 font-bold`}>USA EXTERNA</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* TABLA COMPARATIVA - LOAD DATA */}
+            <div className={`glossary-card sm:shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+              <div className="bg-indigo-600 text-white px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base">📂 COMPARATIVA: LOAD DATA LOCAL vs LOAD DATA</div>
+              <div className="p-2 sm:p-4 overflow-x-auto">
+                <table className="w-full text-xs sm:text-sm min-w-96">
+                  <thead><tr className={`border-b ${darkMode ? 'border-slate-600' : 'border-slate-200'}`}>
+                    <th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-indigo-400' : 'text-indigo-700'}`}>Aspecto</th>
+                    <th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-teal-400' : 'text-teal-700'}`}>LOAD DATA LOCAL INPATH</th>
+                    <th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-purple-400' : 'text-purple-700'}`}>LOAD DATA INPATH</th>
+                  </tr></thead>
+                  <tbody className={`divide-y ${darkMode ? 'divide-slate-700' : 'divide-slate-100'}`}>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Origen de datos</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Sistema de archivos LOCAL</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>HDFS</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Acción sobre archivo</td><td className={`py-2 text-green-500 font-bold`}>COPIA el archivo</td><td className={`py-2 text-orange-500 font-bold`}>MUEVE el archivo</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Archivo original</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Permanece en origen</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Desaparece de origen</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Ruta ejemplo</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>/home/hadoop/fichero.csv</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>/practicas/fichero.csv</td></tr>
+                    <tr><td className={`py-2 font-medium ${darkMode ? "text-slate-200" : "text-slate-800"}`}>Palabra clave</td><td className={`py-2 text-teal-500 font-bold`}>LOCAL = copia</td><td className={`py-2 text-orange-500 font-bold`}>Sin LOCAL = mueve</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* TIPOS DE DATOS HIVE */}
+            <div className={`glossary-card sm:shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+              <div className="bg-cyan-600 text-white px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base">📊 TIPOS DE DATOS EN HIVE</div>
+              <div className="p-2 sm:p-4 overflow-x-auto">
+                <table className="w-full text-xs sm:text-sm min-w-96">
+                  <thead><tr className={`border-b ${darkMode ? 'border-slate-600' : 'border-slate-200'}`}>
+                    <th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-cyan-400' : 'text-cyan-700'}`}>Tipo</th>
+                    <th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-cyan-400' : 'text-cyan-700'}`}>Descripción</th>
+                    <th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-cyan-400' : 'text-cyan-700'}`}>Ejemplo de uso</th>
+                  </tr></thead>
+                  <tbody className={`divide-y ${darkMode ? 'divide-slate-700' : 'divide-slate-100'}`}>
+                    <tr><td className={`py-2 font-medium font-mono ${darkMode ? "text-blue-400" : "text-blue-600"}`}>STRING</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Texto de cualquier longitud</td><td className={`py-2 ${darkMode ? "text-slate-400" : "text-slate-500"}`}>nombre, dirección, descripción</td></tr>
+                    <tr><td className={`py-2 font-medium font-mono ${darkMode ? "text-blue-400" : "text-blue-600"}`}>INT</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Entero de 32 bits (-2B a 2B)</td><td className={`py-2 ${darkMode ? "text-slate-400" : "text-slate-500"}`}>edad, cantidad, id</td></tr>
+                    <tr><td className={`py-2 font-medium font-mono ${darkMode ? "text-blue-400" : "text-blue-600"}`}>BIGINT</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Entero de 64 bits (muy grande)</td><td className={`py-2 ${darkMode ? "text-slate-400" : "text-slate-500"}`}>timestamps, ids largos</td></tr>
+                    <tr><td className={`py-2 font-medium font-mono ${darkMode ? "text-blue-400" : "text-blue-600"}`}>DOUBLE</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Decimal de doble precisión</td><td className={`py-2 ${darkMode ? "text-slate-400" : "text-slate-500"}`}>precio, salario, porcentaje</td></tr>
+                    <tr><td className={`py-2 font-medium font-mono ${darkMode ? "text-blue-400" : "text-blue-600"}`}>FLOAT</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Decimal de precisión simple</td><td className={`py-2 ${darkMode ? "text-slate-400" : "text-slate-500"}`}>medidas, coordenadas</td></tr>
+                    <tr><td className={`py-2 font-medium font-mono ${darkMode ? "text-blue-400" : "text-blue-600"}`}>BOOLEAN</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>TRUE o FALSE</td><td className={`py-2 ${darkMode ? "text-slate-400" : "text-slate-500"}`}>activo, verificado</td></tr>
+                    <tr><td className={`py-2 font-medium font-mono ${darkMode ? "text-blue-400" : "text-blue-600"}`}>TIMESTAMP</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Fecha y hora</td><td className={`py-2 ${darkMode ? "text-slate-400" : "text-slate-500"}`}>fecha_creacion</td></tr>
+                    <tr><td className={`py-2 font-medium font-mono ${darkMode ? "text-blue-400" : "text-blue-600"}`}>DATE</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Solo fecha (YYYY-MM-DD)</td><td className={`py-2 ${darkMode ? "text-slate-400" : "text-slate-500"}`}>fecha_nacimiento</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
             {/* BANCO DE COMANDOS */}
             <div className={`sm:overflow-hidden shadow-lg sm:shadow-2xl ${darkMode ? 'bg-slate-950' : 'bg-slate-900'}`}>
-              <div className={`px-3 sm:px-6 py-2 sm:py-3 font-bold text-white text-xs sm:text-sm md:text-base ${darkMode ? 'bg-slate-900' : 'bg-slate-800'}`}>COMANDOS RÁPIDOS</div>
+              <div className={`px-3 sm:px-6 py-2 sm:py-3 font-bold text-white text-xs sm:text-sm md:text-base ${darkMode ? 'bg-slate-900' : 'bg-slate-800'}`}>⌨️ COMANDOS RÁPIDOS</div>
               <div className="p-3 sm:p-6 font-mono text-[10px] sm:text-xs md:text-sm space-y-4 sm:space-y-6 overflow-x-auto">
                 
                 <div>
-                  <h3 className="text-teal-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># HDFS</h3>
+                  <h3 className="text-red-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># 0️⃣ ARRANQUE DEL SISTEMA (OBLIGATORIO)</h3>
                   <div className="space-y-0.5 sm:space-y-1 whitespace-nowrap">
-                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-ls</span> <span className="text-green-400">/ruta</span>          <span className="text-slate-500"># listar</span></code>
+                    <code className="block"><span className="text-cyan-400">su - hadoop</span>               <span className="text-slate-500"># cambiar a usuario hadoop</span></code>
+                    <code className="block"><span className="text-cyan-400">whoami</span>                     <span className="text-slate-500"># verificar usuario (debe ser hadoop)</span></code>
+                    <code className="block"><span className="text-cyan-400">ssh localhost</span>              <span className="text-slate-500"># comprobar SSH</span></code>
+                    <code className="block"><span className="text-cyan-400">exit</span>                       <span className="text-slate-500"># salir de SSH</span></code>
+                    <code className="block"><span className="text-cyan-400">sudo service ssh start</span>    <span className="text-slate-500"># arrancar SSH (si falla)</span></code>
+                    <code className="block"><span className="text-cyan-400">start-dfs.sh</span>               <span className="text-slate-500"># arrancar HDFS</span></code>
+                    <code className="block"><span className="text-cyan-400">start-yarn.sh</span>              <span className="text-slate-500"># arrancar YARN</span></code>
+                    <code className="block"><span className="text-cyan-400">jps</span>                        <span className="text-slate-500"># verificar procesos (5 mínimo)</span></code>
+                    <code className="block"><span className="text-cyan-400">stop-all.sh</span>                <span className="text-slate-500"># parar todo</span></code>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-teal-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># 1️⃣ HDFS - NAVEGACIÓN Y GESTIÓN</h3>
+                  <div className="space-y-0.5 sm:space-y-1 whitespace-nowrap">
+                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-ls</span> <span className="text-green-400">/ruta</span>          <span className="text-slate-500"># listar contenido</span></code>
+                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-ls -R</span> <span className="text-green-400">/ruta</span>       <span className="text-slate-500"># listar recursivo</span></code>
                     <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-mkdir -p</span> <span className="text-green-400">/ruta</span>    <span className="text-slate-500"># crear directorios</span></code>
                     <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-put</span> <span className="text-slate-300">fichero</span> <span className="text-green-400">/ruta</span> <span className="text-slate-500"># subir a HDFS</span></code>
-                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-get</span> <span className="text-green-400">/ruta/fichero</span> <span className="text-slate-500"># bajar a local</span></code>
-                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-head</span> <span className="text-slate-300">fichero</span>      <span className="text-slate-500"># ver primeras líneas</span></code>
-                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-cat</span> <span className="text-slate-300">fichero</span>       <span className="text-slate-500"># ver contenido</span></code>
-                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-rm</span> <span className="text-slate-300">fichero</span>        <span className="text-slate-500"># borrar archivo</span></code>
+                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-put -f</span> <span className="text-slate-300">fichero</span> <span className="text-green-400">/ruta</span> <span className="text-slate-500"># subir sobrescribiendo</span></code>
+                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-get</span> <span className="text-green-400">/ruta/fichero</span> <span className="text-slate-500"># descargar a local</span></code>
+                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-head</span> <span className="text-green-400">/ruta/fichero</span>  <span className="text-slate-500"># ver primeras líneas</span></code>
+                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-cat</span> <span className="text-green-400">/ruta/fichero</span>   <span className="text-slate-500"># ver contenido completo</span></code>
+                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-tail</span> <span className="text-green-400">/ruta/fichero</span>  <span className="text-slate-500"># ver últimas líneas</span></code>
+                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-rm</span> <span className="text-green-400">/ruta/fichero</span>    <span className="text-slate-500"># borrar archivo</span></code>
                     <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-rm -r</span> <span className="text-green-400">/ruta</span>        <span className="text-slate-500"># borrar directorio</span></code>
+                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-cp</span> <span className="text-green-400">/origen /destino</span> <span className="text-slate-500"># copiar en HDFS</span></code>
+                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-mv</span> <span className="text-green-400">/origen /destino</span> <span className="text-slate-500"># mover en HDFS</span></code>
+                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-du -h</span> <span className="text-green-400">/ruta</span>        <span className="text-slate-500"># ver tamaño</span></code>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-teal-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># HIVE – Bases de datos</h3>
+                  <h3 className="text-orange-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># 2️⃣ MAPREDUCE (si lo piden)</h3>
                   <div className="space-y-0.5 sm:space-y-1 whitespace-nowrap">
-                    <code className="block"><span className="text-purple-400">SHOW DATABASES</span><span className="text-slate-300">;</span></code>
-                    <code className="block"><span className="text-purple-400">USE</span> <span className="text-slate-300">nombre_bd</span><span className="text-slate-300">;</span></code>
-                    <code className="block"><span className="text-purple-400">SHOW TABLES</span><span className="text-slate-300">;</span></code>
+                    <code className="block"><span className="text-cyan-400">hadoop jar</span> <span className="text-slate-300">/ruta/ejemplo.jar</span> <span className="text-purple-400">wordcount</span> <span className="text-green-400">/entrada /salida</span></code>
+                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-cat</span> <span className="text-green-400">/salida/part-r-00000</span> <span className="text-slate-500"># ver resultado</span></code>
+                    <code className="block"><span className="text-cyan-400">hdfs dfs</span> <span className="text-orange-400">-rm -r</span> <span className="text-green-400">/salida</span>      <span className="text-slate-500"># borrar salida (si existe)</span></code>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-teal-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># HIVE – Tabla interna</h3>
+                  <h3 className="text-purple-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># 3️⃣ HIVE – Bases de datos y tablas</h3>
+                  <div className="space-y-0.5 sm:space-y-1 whitespace-nowrap">
+                    <code className="block"><span className="text-cyan-400">hive</span>                       <span className="text-slate-500"># entrar en Hive</span></code>
+                    <code className="block"><span className="text-purple-400">SHOW DATABASES</span><span className="text-slate-300">;</span>            <span className="text-slate-500"># ver bases de datos</span></code>
+                    <code className="block"><span className="text-purple-400">USE</span> <span className="text-slate-300">nombre_bd</span><span className="text-slate-300">;</span>             <span className="text-slate-500"># usar base de datos</span></code>
+                    <code className="block"><span className="text-purple-400">SHOW TABLES</span><span className="text-slate-300">;</span>               <span className="text-slate-500"># ver tablas</span></code>
+                    <code className="block"><span className="text-purple-400">DESCRIBE</span> <span className="text-slate-300">tabla</span><span className="text-slate-300">;</span>            <span className="text-slate-500"># ver estructura</span></code>
+                    <code className="block"><span className="text-purple-400">DESCRIBE EXTENDED</span> <span className="text-slate-300">tabla</span><span className="text-slate-300">;</span>   <span className="text-slate-500"># ver estructura detallada</span></code>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-teal-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># 4️⃣ HIVE – Tabla interna</h3>
                   <div className="space-y-0.5 sm:space-y-1 whitespace-nowrap">
                     <code className="block"><span className="text-purple-400">CREATE TABLE</span> <span className="text-slate-300">tabla</span> <span className="text-slate-400">(</span></code>
-                    <code className="block">  <span className="text-slate-300">col1</span> <span className="text-blue-400">TIPO</span><span className="text-slate-400">,</span></code>
-                    <code className="block">  <span className="text-slate-300">col2</span> <span className="text-blue-400">TIPO</span></code>
+                    <code className="block">  <span className="text-slate-300">col1</span> <span className="text-blue-400">STRING</span><span className="text-slate-400">,</span></code>
+                    <code className="block">  <span className="text-slate-300">col2</span> <span className="text-blue-400">INT</span><span className="text-slate-400">,</span></code>
+                    <code className="block">  <span className="text-slate-300">col3</span> <span className="text-blue-400">DOUBLE</span></code>
                     <code className="block"><span className="text-slate-400">)</span></code>
                     <code className="block"><span className="text-pink-400">ROW FORMAT DELIMITED</span></code>
                     <code className="block"><span className="text-pink-400">FIELDS TERMINATED BY</span> <span className="text-amber-300">&apos;,&apos;</span><span className="text-slate-300">;</span></code>
@@ -1922,49 +2194,67 @@ export default function BigDataStudyApp() {
                 </div>
 
                 <div>
-                  <h3 className="text-teal-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># HIVE – Tabla externa</h3>
+                  <h3 className="text-purple-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># 5️⃣ HIVE – Tabla externa (MÁS SEGURA)</h3>
                   <div className="space-y-0.5 sm:space-y-1 whitespace-nowrap">
                     <code className="block"><span className="text-purple-400">CREATE EXTERNAL TABLE</span> <span className="text-slate-300">tabla</span> <span className="text-slate-400">(</span></code>
-                    <code className="block">  <span className="text-slate-300">col1</span> <span className="text-blue-400">TIPO</span><span className="text-slate-400">,</span></code>
-                    <code className="block">  <span className="text-slate-300">col2</span> <span className="text-blue-400">TIPO</span></code>
+                    <code className="block">  <span className="text-slate-300">col1</span> <span className="text-blue-400">STRING</span><span className="text-slate-400">,</span></code>
+                    <code className="block">  <span className="text-slate-300">col2</span> <span className="text-blue-400">INT</span></code>
                     <code className="block"><span className="text-slate-400">)</span></code>
                     <code className="block"><span className="text-pink-400">ROW FORMAT DELIMITED</span></code>
                     <code className="block"><span className="text-pink-400">FIELDS TERMINATED BY</span> <span className="text-amber-300">&apos;,&apos;</span></code>
-                    <code className="block"><span className="text-orange-400">LOCATION</span> <span className="text-green-400">&apos;/ruta_hdfs&apos;</span><span className="text-slate-300">;</span></code>
+                    <code className="block"><span className="text-orange-400">LOCATION</span> <span className="text-green-400">&apos;/ruta_hdfs&apos;</span><span className="text-slate-300">;</span>  <span className="text-slate-500"># ¡DIRECTORIO!</span></code>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-teal-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># HIVE – Cargar datos</h3>
+                  <h3 className="text-amber-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># 6️⃣ HIVE – Cargar datos</h3>
                   <div className="space-y-0.5 sm:space-y-1 whitespace-nowrap">
-                    <code className="block"><span className="text-purple-400">LOAD DATA LOCAL INPATH</span> <span className="text-green-400">&apos;/ruta_local&apos;</span> <span className="text-purple-400">INTO TABLE</span> <span className="text-slate-300">tabla</span><span className="text-slate-300">;</span></code>
-                    <code className="block"><span className="text-purple-400">LOAD DATA INPATH</span> <span className="text-green-400">&apos;/ruta_hdfs&apos;</span> <span className="text-purple-400">INTO TABLE</span> <span className="text-slate-300">tabla</span><span className="text-slate-300">;</span></code>
+                    <code className="block"><span className="text-slate-500">-- Desde LOCAL (COPIA el archivo)</span></code>
+                    <code className="block"><span className="text-purple-400">LOAD DATA LOCAL INPATH</span> <span className="text-green-400">&apos;/home/hadoop/f.csv&apos;</span></code>
+                    <code className="block"><span className="text-purple-400">INTO TABLE</span> <span className="text-slate-300">tabla</span><span className="text-slate-300">;</span></code>
+                    <code className="block"></code>
+                    <code className="block"><span className="text-slate-500">-- Desde HDFS (MUEVE el archivo)</span></code>
+                    <code className="block"><span className="text-purple-400">LOAD DATA INPATH</span> <span className="text-green-400">&apos;/practicas/f.csv&apos;</span></code>
+                    <code className="block"><span className="text-purple-400">INTO TABLE</span> <span className="text-slate-300">tabla</span><span className="text-slate-300">;</span></code>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-teal-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># HIVE – Consultas</h3>
+                  <h3 className="text-green-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># 7️⃣ HIVE – Consultas</h3>
                   <div className="space-y-0.5 sm:space-y-1 whitespace-nowrap">
-                    <code className="block"><span className="text-purple-400">SELECT</span> <span className="text-yellow-400">COUNT</span><span className="text-slate-400">(</span><span className="text-pink-400">*</span><span className="text-slate-400">)</span> <span className="text-purple-400">FROM</span> <span className="text-slate-300">tabla</span><span className="text-slate-300">;</span></code>
-                    <code className="block"><span className="text-purple-400">SELECT</span> <span className="text-pink-400">*</span> <span className="text-purple-400">FROM</span> <span className="text-slate-300">tabla</span> <span className="text-purple-400">LIMIT</span> <span className="text-blue-400">5</span><span className="text-slate-300">;</span></code>
-                    <code className="block"><span className="text-purple-400">DESCRIBE</span> <span className="text-slate-300">tabla</span><span className="text-slate-300">;</span></code>
+                    <code className="block"><span className="text-purple-400">SELECT</span> <span className="text-yellow-400">COUNT</span><span className="text-slate-400">(</span><span className="text-pink-400">*</span><span className="text-slate-400">)</span> <span className="text-purple-400">FROM</span> <span className="text-slate-300">tabla</span><span className="text-slate-300">;</span>   <span className="text-slate-500"># verificar carga</span></code>
+                    <code className="block"><span className="text-purple-400">SELECT</span> <span className="text-pink-400">*</span> <span className="text-purple-400">FROM</span> <span className="text-slate-300">tabla</span> <span className="text-purple-400">LIMIT</span> <span className="text-blue-400">5</span><span className="text-slate-300">;</span>   <span className="text-slate-500"># ver muestra</span></code>
+                    <code className="block"><span className="text-purple-400">SELECT</span> <span className="text-slate-300">col1</span><span className="text-slate-400">,</span> <span className="text-slate-300">col2</span> <span className="text-purple-400">FROM</span> <span className="text-slate-300">tabla</span></code>
+                    <code className="block"><span className="text-purple-400">WHERE</span> <span className="text-slate-300">col2</span> <span className="text-pink-400">&gt;</span> <span className="text-blue-400">100</span><span className="text-slate-300">;</span></code>
+                    <code className="block"><span className="text-purple-400">SELECT</span> <span className="text-slate-300">col1</span><span className="text-slate-400">,</span> <span className="text-yellow-400">COUNT</span><span className="text-slate-400">(</span><span className="text-pink-400">*</span><span className="text-slate-400">)</span> <span className="text-purple-400">FROM</span> <span className="text-slate-300">tabla</span></code>
+                    <code className="block"><span className="text-purple-400">GROUP BY</span> <span className="text-slate-300">col1</span><span className="text-slate-300">;</span></code>
+                    <code className="block"><span className="text-purple-400">SELECT</span> <span className="text-pink-400">*</span> <span className="text-purple-400">FROM</span> <span className="text-slate-300">tabla</span> <span className="text-purple-400">ORDER BY</span> <span className="text-slate-300">col1</span><span className="text-slate-300">;</span></code>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-teal-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># HIVE – JOIN</h3>
+                  <h3 className="text-blue-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># 8️⃣ HIVE – JOIN</h3>
                   <div className="space-y-0.5 sm:space-y-1 whitespace-nowrap">
-                    <code className="block"><span className="text-purple-400">SELECT</span> <span className="text-slate-300">a.col</span><span className="text-slate-400">,</span> <span className="text-slate-300">b.col</span></code>
-                    <code className="block"><span className="text-purple-400">FROM</span> <span className="text-slate-300">t1 a</span></code>
-                    <code className="block"><span className="text-purple-400">JOIN</span> <span className="text-slate-300">t2 b</span></code>
+                    <code className="block"><span className="text-purple-400">SELECT</span> <span className="text-slate-300">a.col1</span><span className="text-slate-400">,</span> <span className="text-slate-300">b.col2</span></code>
+                    <code className="block"><span className="text-purple-400">FROM</span> <span className="text-slate-300">tabla1 a</span></code>
+                    <code className="block"><span className="text-purple-400">JOIN</span> <span className="text-slate-300">tabla2 b</span></code>
+                    <code className="block"><span className="text-purple-400">ON</span> <span className="text-slate-300">a.id</span> <span className="text-pink-400">=</span> <span className="text-slate-300">b.id</span><span className="text-slate-300">;</span></code>
+                    <code className="block"></code>
+                    <code className="block"><span className="text-slate-500">-- LEFT JOIN (todos de izquierda)</span></code>
+                    <code className="block"><span className="text-purple-400">SELECT</span> <span className="text-slate-300">a.col1</span><span className="text-slate-400">,</span> <span className="text-slate-300">b.col2</span></code>
+                    <code className="block"><span className="text-purple-400">FROM</span> <span className="text-slate-300">tabla1 a</span></code>
+                    <code className="block"><span className="text-purple-400">LEFT JOIN</span> <span className="text-slate-300">tabla2 b</span></code>
                     <code className="block"><span className="text-purple-400">ON</span> <span className="text-slate-300">a.id</span> <span className="text-pink-400">=</span> <span className="text-slate-300">b.id</span><span className="text-slate-300">;</span></code>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-teal-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># HIVE – Borrar</h3>
+                  <h3 className="text-red-400 font-bold mb-2 sm:mb-3 text-xs sm:text-sm"># 9️⃣ HIVE – Borrar</h3>
                   <div className="space-y-0.5 sm:space-y-1 whitespace-nowrap">
-                    <code className="block"><span className="text-purple-400">DROP TABLE</span> <span className="text-slate-300">tabla</span><span className="text-slate-300">;</span></code>
+                    <code className="block"><span className="text-purple-400">DROP TABLE</span> <span className="text-slate-300">tabla</span><span className="text-slate-300">;</span>            <span className="text-slate-500"># ⚠️ INTERNA borra datos</span></code>
+                    <code className="block"><span className="text-purple-400">DROP TABLE IF EXISTS</span> <span className="text-slate-300">tabla</span><span className="text-slate-300">;</span> <span className="text-slate-500"># sin error si no existe</span></code>
+                    <code className="block"><span className="text-purple-400">DROP DATABASE</span> <span className="text-slate-300">bd</span><span className="text-slate-300">;</span>            <span className="text-slate-500"># borrar BD (vacía)</span></code>
+                    <code className="block"><span className="text-purple-400">DROP DATABASE</span> <span className="text-slate-300">bd</span> <span className="text-orange-400">CASCADE</span><span className="text-slate-300">;</span>   <span className="text-slate-500"># borrar BD con tablas</span></code>
                   </div>
                 </div>
 
@@ -1973,7 +2263,7 @@ export default function BigDataStudyApp() {
 
             {/* MAPA MENTAL */}
             <div className={`glossary-card sm:shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
-              <div className="bg-slate-700 text-white px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base">MAPA MENTAL</div>
+              <div className="bg-slate-700 text-white px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base">🗺️ MAPA MENTAL</div>
               <div className="p-3 sm:p-6 overflow-x-auto">
                 <pre className={`text-[10px] sm:text-xs md:text-sm font-mono leading-relaxed whitespace-pre ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>{`BigData
  ├─ Arquitecturas
@@ -1981,28 +2271,145 @@ export default function BigDataStudyApp() {
  │   ├─ Lambda / Kappa
  │   └─ Data Lake / Warehouse
  ├─ Hadoop
- │   ├─ HDFS (datos)
- │   ├─ YARN (recursos)
+ │   ├─ HDFS (almacena datos)
+ │   │   ├─ NameNode (metadatos)
+ │   │   ├─ DataNode (datos)
+ │   │   └─ SecondaryNameNode
+ │   ├─ YARN (gestiona recursos)
+ │   │   ├─ ResourceManager
+ │   │   └─ NodeManager
  │   └─ MapReduce (procesa)
  ├─ BBDD
- │   ├─ SQL
- │   └─ NoSQL
+ │   ├─ SQL (estructurado)
+ │   └─ NoSQL (flexible)
  └─ Hive
-     ├─ Tablas (internas/externas)
-     ├─ Metastore
-     └─ Consultas HiveQL`}</pre>
+     ├─ Tablas
+     │   ├─ INTERNA → DROP borra datos
+     │   └─ EXTERNA → DROP NO borra
+     ├─ Metastore (esquemas)
+     └─ HiveQL (consultas)`}</pre>
+              </div>
+            </div>
+
+            {/* FLUJO DEL EXAMEN */}
+            <div className={`glossary-card sm:shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+              <div className="bg-gradient-to-r from-teal-600 to-emerald-600 text-white px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base">🎯 FLUJO DEL EXAMEN PRÁCTICO</div>
+              <div className="p-3 sm:p-6 overflow-x-auto">
+                <pre className={`text-[10px] sm:text-xs md:text-sm font-mono leading-relaxed whitespace-pre ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>{`┌─────────────────────────────────────────────────────────────┐
+│  0️⃣  su - hadoop         │  Cambiar usuario              │
+│       ↓                   │                                │
+│  1️⃣  ssh localhost       │  Comprobar SSH                │
+│       ↓                   │                                │
+│  2️⃣  start-dfs.sh        │  Arrancar HDFS                │
+│       ↓                   │                                │
+│  3️⃣  start-yarn.sh       │  Arrancar YARN                │
+│       ↓                   │                                │
+│  4️⃣  jps                 │  Verificar 5 procesos         │
+│       ↓                   │                                │
+│  5️⃣  hdfs dfs -ls /      │  Explorar HDFS                │
+│       ↓                   │                                │
+│  6️⃣  hdfs dfs -put ...   │  Subir datos                  │
+│       ↓                   │                                │
+│  7️⃣  hive                │  Entrar en Hive               │
+│       ↓                   │                                │
+│  8️⃣  CREATE TABLE ...    │  Crear tabla                  │
+│       ↓                   │                                │
+│  9️⃣  LOAD DATA ...       │  Cargar datos                 │
+│       ↓                   │                                │
+│  🔟 SELECT COUNT(*)...   │  Verificar carga              │
+│       ↓                   │                                │
+│  ✅  SELECT ...           │  Consultas del enunciado      │
+└─────────────────────────────────────────────────────────────┘`}</pre>
+              </div>
+            </div>
+
+            {/* ERRORES TÍPICOS */}
+            <div className={`glossary-card sm:shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+              <div className="bg-red-600 text-white px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base">❌ ERRORES TÍPICOS DEL EXAMEN</div>
+              <div className="p-2 sm:p-4 overflow-x-auto">
+                <table className="w-full text-xs sm:text-sm min-w-96">
+                  <thead><tr className={`border-b ${darkMode ? 'border-slate-600' : 'border-slate-200'}`}>
+                    <th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-red-400' : 'text-red-700'}`}>Error</th>
+                    <th className={`text-left py-1.5 sm:py-2 font-semibold ${darkMode ? 'text-green-400' : 'text-green-700'}`}>Solución</th>
+                  </tr></thead>
+                  <tbody className={`divide-y ${darkMode ? 'divide-slate-700' : 'divide-slate-100'}`}>
+                    <tr><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>No hacer su - hadoop</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>SIEMPRE empezar con su - hadoop</td></tr>
+                    <tr><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Hadoop no arranca</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Comprobar SSH: ssh localhost</td></tr>
+                    <tr><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Usar ls en vez de hdfs dfs -ls</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Todos los comandos HDFS llevan hdfs dfs</td></tr>
+                    <tr><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Olvidar ROW FORMAT DELIMITED</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Todo sale NULL → añadir ROW FORMAT</td></tr>
+                    <tr><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Separador incorrecto</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Usar hdfs dfs -head para ver separador</td></tr>
+                    <tr><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>LOCATION apunta a archivo</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>LOCATION siempre apunta a DIRECTORIO</td></tr>
+                    <tr><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>DROP TABLE borra datos</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Solo en INTERNA. Usar EXTERNA para seguridad</td></tr>
+                    <tr><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>COUNT(*) da 0</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Revisar ruta, separador o tipos</td></tr>
+                    <tr><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>JOIN sin resultados</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Revisar tipos (INT vs STRING)</td></tr>
+                    <tr><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>MapReduce falla: output exists</td><td className={`py-2 ${darkMode ? "text-slate-300" : "text-slate-700"}`}>Borrar directorio de salida primero</td></tr>
+                  </tbody>
+                </table>
               </div>
             </div>
 
             {/* FRASES CLAVE */}
             <div className={`sm:border-2 overflow-hidden ${darkMode ? 'bg-yellow-900/30 border-yellow-600' : 'bg-yellow-50 border-yellow-400'}`}>
-              <div className={`px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base ${darkMode ? 'bg-yellow-700 text-yellow-100' : 'bg-yellow-400 text-yellow-900'}`}>🔑 FRASES CLAVE</div>
+              <div className={`px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base ${darkMode ? 'bg-yellow-700 text-yellow-100' : 'bg-yellow-400 text-yellow-900'}`}>🔑 FRASES CLAVE PARA MEMORIZAR</div>
               <div className="p-3 sm:p-6 space-y-2 sm:space-y-3">
-                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Si no empieza por <code className={`px-0.5 sm:px-1 text-[10px] sm:text-xs ${darkMode ? 'bg-yellow-800' : 'bg-yellow-200'}`}>hdfs dfs</code>, estoy en local.&quot;</p>
-                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Hive no guarda datos, guarda metadatos.&quot;</p>
-                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Tabla interna borra datos, externa no.&quot;</p>
-                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Si <code className={`px-0.5 sm:px-1 text-[10px] sm:text-xs ${darkMode ? 'bg-yellow-800' : 'bg-yellow-200'}`}>COUNT(*)</code> da 0, algo está mal antes del SQL.&quot;</p>
-                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Primero datos, luego tablas, luego consultas.&quot;</p>
+                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Si <code className={`px-0.5 sm:px-1 text-[10px] sm:text-xs ${darkMode ? 'bg-yellow-800' : 'bg-yellow-200'}`}>whoami</code> no dice hadoop, NADA funcionará.&quot;</p>
+                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Si Hadoop no arranca → piensa en SSH primero.&quot;</p>
+                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;<code className={`px-0.5 sm:px-1 text-[10px] sm:text-xs ${darkMode ? 'bg-yellow-800' : 'bg-yellow-200'}`}>jps</code> debe mostrar 5 procesos: NameNode, DataNode, SecondaryNameNode, ResourceManager, NodeManager.&quot;</p>
+                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Si no empieza por <code className={`px-0.5 sm:px-1 text-[10px] sm:text-xs ${darkMode ? 'bg-yellow-800' : 'bg-yellow-200'}`}>hdfs dfs</code>, estoy en local, NO en HDFS.&quot;</p>
+                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;NUNCA paso a Hive sin verificar que el archivo está en HDFS.&quot;</p>
+                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Hive NO guarda datos, guarda metadatos.&quot;</p>
+                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Tabla INTERNA → DROP borra datos. Tabla EXTERNA → DROP NO borra datos.&quot;</p>
+                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;En caso de duda, usa EXTERNA. Es más seguro.&quot;</p>
+                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;LOCATION apunta al DIRECTORIO, nunca al fichero.&quot;</p>
+                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;LOCAL = copia desde local. Sin LOCAL = mueve desde HDFS.&quot;</p>
+                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Si <code className={`px-0.5 sm:px-1 text-[10px] sm:text-xs ${darkMode ? 'bg-yellow-800' : 'bg-yellow-200'}`}>COUNT(*)</code> da 0, algo está mal: ruta, separador o tipos.&quot;</p>
+                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Diagnóstico: 1️⃣ jps → 2️⃣ hdfs dfs -ls → 3️⃣ SELECT COUNT(*)&quot;</p>
+              </div>
+            </div>
+
+            {/* CHECKLIST RÁPIDO */}
+            <div className={`glossary-card sm:shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+              <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base">✅ CHECKLIST PRE-EXAMEN (5 min antes)</div>
+              <div className="p-3 sm:p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
+                  <div className={`p-2 sm:p-3 border ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-200'}`}>
+                    <h4 className={`font-bold mb-2 text-xs sm:text-sm ${darkMode ? 'text-teal-400' : 'text-teal-700'}`}>Arranque</h4>
+                    <ul className={`text-xs sm:text-sm space-y-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                      <li>☐ su - hadoop</li>
+                      <li>☐ ssh localhost (y exit)</li>
+                      <li>☐ start-dfs.sh</li>
+                      <li>☐ start-yarn.sh</li>
+                      <li>☐ jps (5 procesos)</li>
+                    </ul>
+                  </div>
+                  <div className={`p-2 sm:p-3 border ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-200'}`}>
+                    <h4 className={`font-bold mb-2 text-xs sm:text-sm ${darkMode ? 'text-orange-400' : 'text-orange-700'}`}>HDFS</h4>
+                    <ul className={`text-xs sm:text-sm space-y-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                      <li>☐ hdfs dfs -ls /</li>
+                      <li>☐ hdfs dfs -head (ver separador)</li>
+                      <li>☐ hdfs dfs -put (subir datos)</li>
+                      <li>☐ Verificar que el archivo está</li>
+                    </ul>
+                  </div>
+                  <div className={`p-2 sm:p-3 border ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-200'}`}>
+                    <h4 className={`font-bold mb-2 text-xs sm:text-sm ${darkMode ? 'text-purple-400' : 'text-purple-700'}`}>Hive - Tablas</h4>
+                    <ul className={`text-xs sm:text-sm space-y-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                      <li>☐ EXTERNA si datos en HDFS</li>
+                      <li>☐ ROW FORMAT DELIMITED</li>
+                      <li>☐ FIELDS TERMINATED BY &apos;X&apos;</li>
+                      <li>☐ LOCATION = directorio</li>
+                    </ul>
+                  </div>
+                  <div className={`p-2 sm:p-3 border ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-200'}`}>
+                    <h4 className={`font-bold mb-2 text-xs sm:text-sm ${darkMode ? 'text-green-400' : 'text-green-700'}`}>Verificación</h4>
+                    <ul className={`text-xs sm:text-sm space-y-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                      <li>☐ SELECT COUNT(*) ≠ 0</li>
+                      <li>☐ SELECT * LIMIT 5</li>
+                      <li>☐ Los datos se ven bien</li>
+                      <li>☐ Consultas del enunciado</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
 
