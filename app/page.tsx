@@ -1310,17 +1310,17 @@ export default function BigDataStudyApp() {
       <header className={`sticky top-0 z-30 border-b transition-colors duration-300 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
         <div className="max-w-5xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between">
           <h1 className={`text-lg sm:text-xl font-bold flex items-center gap-2 ${darkMode ? 'text-teal-400' : 'text-teal-700'}`}>
-            <Brain className="w-5 h-5 sm:w-6 sm:h-6" /> <span className="hidden xs:inline">Big Data</span><span className="xs:hidden">BD</span>
+            <Brain className="w-5 h-5 sm:w-6 sm:h-6" /> <span className="hidden xs:inline">Big Data</span><span className="xs:hidden">Big Data Aplicado</span>
           </h1>
           
           {/* Navegación Desktop */}
           <div className="hidden md:flex items-center gap-4">
-            <nav className={`flex gap-1 p-1 rounded-lg ${darkMode ? 'bg-slate-700' : 'bg-slate-100'}`}>
+            <nav className={`flex gap-1 p-1 ${darkMode ? 'bg-slate-700' : 'bg-slate-100'}`}>
               {['study', 'cheat', 'flashcards'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+                  className={`px-4 py-1.5 text-sm font-medium transition-all ${
                     activeTab === tab 
                       ? darkMode 
                         ? 'bg-slate-600 text-teal-400 shadow-sm' 
@@ -1338,7 +1338,7 @@ export default function BigDataStudyApp() {
             </nav>
             <button
               onClick={toggleDarkMode}
-              className={`p-2 rounded-lg transition-all ${darkMode ? 'bg-slate-700 text-yellow-400 hover:bg-slate-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+              className={`p-2 transition-all ${darkMode ? 'bg-slate-700 text-yellow-400 hover:bg-slate-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
               title={darkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
             >
               {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -1349,13 +1349,13 @@ export default function BigDataStudyApp() {
           <div className="flex md:hidden items-center gap-2">
             <button
               onClick={toggleDarkMode}
-              className={`p-2 rounded-lg transition-all ${darkMode ? 'bg-slate-700 text-yellow-400' : 'bg-slate-100 text-slate-600'}`}
+              className={`p-2 transition-all ${darkMode ? 'bg-slate-700 text-yellow-400' : 'bg-slate-100 text-slate-600'}`}
             >
               {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`p-2 rounded-lg transition-all ${darkMode ? 'bg-slate-700 text-slate-200' : 'bg-slate-100 text-slate-600'}`}
+              className={`p-2 transition-all ${darkMode ? 'bg-slate-700 text-slate-200' : 'bg-slate-100 text-slate-600'}`}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
@@ -1376,7 +1376,7 @@ export default function BigDataStudyApp() {
                 <button
                   key={tab}
                   onClick={() => { setActiveTab(tab); setMobileMenuOpen(false); setMobileSidebarOpen(false); }}
-                  className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                  className={`w-full text-left px-4 py-3 text-sm font-medium transition-all ${
                     activeTab === tab 
                       ? darkMode 
                         ? 'bg-slate-700 text-teal-400' 
@@ -1407,7 +1407,7 @@ export default function BigDataStudyApp() {
             <div className="md:hidden">
               <button
                 onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-                className={`w-full flex items-center justify-between p-3 rounded-lg font-medium transition-all ${
+                className={`w-full flex items-center justify-between p-3 font-medium transition-all ${
                   darkMode ? 'bg-slate-800 text-teal-400 border border-slate-700' : 'bg-white text-teal-700 border border-slate-200 shadow-sm'
                 }`}
               >
@@ -1422,13 +1422,13 @@ export default function BigDataStudyApp() {
               
               {/* Sidebar desplegable en móvil */}
               {mobileSidebarOpen && (
-                <div className={`mt-2 p-2 rounded-lg border ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+                <div className={`mt-2 p-2 border ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
                   <div className="grid grid-cols-2 gap-2">
                     {courseData.map((theme, idx) => (
                       <button
                         key={theme.id}
                         onClick={() => { setActiveTheme(idx); setMobileSidebarOpen(false); }}
-                        className={`text-left p-2.5 rounded-lg text-xs font-medium transition-colors ${
+                        className={`text-left p-2.5 text-xs font-medium transition-colors ${
                           activeTheme === idx 
                             ? darkMode
                               ? 'bg-teal-900/50 text-teal-400 border border-teal-500'
@@ -1453,7 +1453,7 @@ export default function BigDataStudyApp() {
                 <button
                   key={theme.id}
                   onClick={() => setActiveTheme(idx)}
-                  className={`w-full text-left p-3 rounded-lg text-sm transition-colors ${
+                  className={`w-full text-left p-3 text-sm transition-colors ${
                     activeTheme === idx 
                       ? darkMode
                         ? 'bg-teal-900/50 text-teal-400 border-l-4 border-teal-500 font-medium'
@@ -1475,7 +1475,7 @@ export default function BigDataStudyApp() {
               </h2>
               
               {courseData[activeTheme].content.map((section, idx) => (
-                <div key={idx} className={`p-4 sm:p-6 rounded-xl shadow-sm border transition-shadow hover:shadow-md ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'}`}>
+                <div key={idx} className={`p-4 sm:p-6 shadow-sm border transition-shadow hover:shadow-md ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'}`}>
                   <h3 className={`text-lg sm:text-xl font-semibold mb-2 sm:mb-3 ${darkMode ? 'text-teal-400' : 'text-teal-700'}`}>{section.subtitle}</h3>
                   
                   {section.text && <p className={`text-sm sm:text-base leading-relaxed mb-3 sm:mb-4 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>{section.text}</p>}
@@ -1494,7 +1494,7 @@ export default function BigDataStudyApp() {
                   {section.list && (
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 mb-3 sm:mb-4">
                       {section.list.map((item: string, i: number) => (
-                        <li key={i} className={`p-2 rounded text-xs sm:text-sm border ${darkMode ? 'bg-slate-700 text-slate-300 border-slate-600' : 'bg-slate-50 text-slate-700 border-slate-100'}`}>
+                        <li key={i} className={`p-2 text-xs sm:text-sm border ${darkMode ? 'bg-slate-700 text-slate-300 border-slate-600' : 'bg-slate-50 text-slate-700 border-slate-100'}`}>
                           {item}
                         </li>
                       ))}
@@ -1502,7 +1502,7 @@ export default function BigDataStudyApp() {
                   )}
 
                   {section.comparison && (
-                    <div className={`flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg border my-3 sm:my-4 ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-200'}`}>
+                    <div className={`flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 border my-3 sm:my-4 ${darkMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-200'}`}>
                       <div className={`pb-3 sm:pb-0 sm:border-r sm:pr-4 border-b sm:border-b-0 ${darkMode ? 'border-slate-600' : 'border-slate-200'}`}>
                         <strong className={`block mb-1 text-sm sm:text-base ${darkMode ? 'text-teal-400' : 'text-teal-700'}`}>{section.comparison.left}</strong>
                         <span className={`text-xs sm:text-sm ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>{section.comparison.leftDesc}</span>
@@ -1517,7 +1517,7 @@ export default function BigDataStudyApp() {
                   {section.isCode && (
                     <div className="relative group">
                       <div className={`absolute top-2 right-2 text-[10px] sm:text-xs ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>bash/sql</div>
-                      <pre className={`p-3 sm:p-4 rounded-lg overflow-x-auto text-[11px] sm:text-sm font-mono leading-relaxed ${darkMode ? 'bg-slate-950' : 'bg-slate-900'}`}>
+                      <pre className={`p-3 sm:p-4 overflow-x-auto text-[11px] sm:text-sm font-mono leading-relaxed ${darkMode ? 'bg-slate-950' : 'bg-slate-900'}`}>
                         {highlightCode(section.codeBlock || '', darkMode)}
                       </pre>
                     </div>
@@ -1540,16 +1540,15 @@ export default function BigDataStudyApp() {
             
             {/* Pantalla de configuración inicial */}
             {!sessionStarted ? (
-              <div className={`rounded-xl sm:rounded-2xl shadow-lg border p-4 sm:p-6 md:p-8 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+              <div className={`sm:shadow-lg border p-4 sm:p-6 md:p-8 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
                 <div className="text-center mb-6 sm:mb-8">
                   <Brain className={`w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 ${darkMode ? 'text-teal-400' : 'text-teal-500'}`} />
                   <h2 className={`text-2xl sm:text-3xl font-bold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>Repaso Activo</h2>
-                  <p className={`mt-2 text-sm sm:text-base ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Sistema de flashcards con seguimiento de progreso</p>
                 </div>
 
                 {/* Estadísticas de sesión anterior */}
                 {(correctCount > 0 || incorrectCount > 0) && (
-                  <div className={`rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 ${darkMode ? 'bg-slate-700' : 'bg-slate-50'}`}>
+                  <div className={`p-4 sm:p-6 mb-6 sm:mb-8 ${darkMode ? 'bg-slate-700' : 'bg-slate-50'}`}>
                     <h3 className={`text-base sm:text-lg font-bold mb-3 sm:mb-4 text-center ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>📊 Última Sesión</h3>
                     <div className="flex justify-center gap-4 sm:gap-8">
                       <div className="text-center">
@@ -1572,9 +1571,8 @@ export default function BigDataStudyApp() {
 
                 {/* Selector de modo */}
                 <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-                  <h3 className={`text-base sm:text-lg font-bold ${darkMode ? 'text-slate-200' : 'text-slate-700'}`}>Modo de estudio</h3>
                   
-                  <label className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border-2 cursor-pointer transition-all ${studyMode === 'all' ? darkMode ? 'border-teal-500 bg-teal-900/30' : 'border-teal-500 bg-teal-50' : darkMode ? 'border-slate-600 hover:border-slate-500' : 'border-slate-200 hover:border-slate-300'}`}>
+                  <label className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border-2 cursor-pointer transition-all ${studyMode === 'all' ? darkMode ? 'border-teal-500 bg-teal-900/30' : 'border-teal-500 bg-teal-50' : darkMode ? 'border-slate-600 hover:border-slate-500' : 'border-slate-200 hover:border-slate-300'}`}>
                     <input type="radio" name="mode" checked={studyMode === 'all'} onChange={() => setStudyMode('all')} className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600" />
                     <div className="flex-1">
                       <div className={`text-sm sm:text-base font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>📚 Todas las tarjetas</div>
@@ -1582,7 +1580,7 @@ export default function BigDataStudyApp() {
                     </div>
                   </label>
 
-                  <label className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border-2 cursor-pointer transition-all ${studyMode === 'theme' ? darkMode ? 'border-teal-500 bg-teal-900/30' : 'border-teal-500 bg-teal-50' : darkMode ? 'border-slate-600 hover:border-slate-500' : 'border-slate-200 hover:border-slate-300'}`}>
+                  <label className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border-2 cursor-pointer transition-all ${studyMode === 'theme' ? darkMode ? 'border-teal-500 bg-teal-900/30' : 'border-teal-500 bg-teal-50' : darkMode ? 'border-slate-600 hover:border-slate-500' : 'border-slate-200 hover:border-slate-300'}`}>
                     <input type="radio" name="mode" checked={studyMode === 'theme'} onChange={() => setStudyMode('theme')} className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600" />
                     <div className="flex-1">
                       <div className={`text-sm sm:text-base font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>🎯 Por tema específico</div>
@@ -1596,7 +1594,7 @@ export default function BigDataStudyApp() {
                         <button
                           key={idx}
                           onClick={() => setSelectedThemeForStudy(idx)}
-                          className={`p-2 sm:p-3 rounded-lg text-left text-xs sm:text-sm font-medium transition-all ${
+                          className={`p-2 sm:p-3 text-left text-xs sm:text-sm font-medium transition-all ${
                             selectedThemeForStudy === idx 
                               ? 'bg-teal-600 text-white' 
                               : darkMode ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -1611,7 +1609,7 @@ export default function BigDataStudyApp() {
                     </div>
                   )}
 
-                  <label className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border-2 cursor-pointer transition-all ${studyMode === 'hard' ? darkMode ? 'border-orange-500 bg-orange-900/30' : 'border-orange-500 bg-orange-50' : darkMode ? 'border-slate-600 hover:border-slate-500' : 'border-slate-200 hover:border-slate-300'} ${hardCards.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                  <label className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border-2 cursor-pointer transition-all ${studyMode === 'hard' ? darkMode ? 'border-orange-500 bg-orange-900/30' : 'border-orange-500 bg-orange-50' : darkMode ? 'border-slate-600 hover:border-slate-500' : 'border-slate-200 hover:border-slate-300'} ${hardCards.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}>
                     <input type="radio" name="mode" checked={studyMode === 'hard'} onChange={() => hardCards.length > 0 && setStudyMode('hard')} disabled={hardCards.length === 0} className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
                     <div className="flex-1">
                       <div className={`text-sm sm:text-base font-semibold ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>🔥 Tarjetas difíciles</div>
@@ -1626,7 +1624,7 @@ export default function BigDataStudyApp() {
                 <button
                   onClick={startSession}
                   disabled={filteredCards.length === 0}
-                  className={`w-full py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${darkMode ? 'bg-teal-600 text-white hover:bg-teal-500' : 'bg-teal-600 text-white hover:bg-teal-700'}`}
+                  className={`w-full py-3 sm:py-4 font-bold text-base sm:text-lg transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${darkMode ? 'bg-teal-600 text-white hover:bg-teal-500' : 'bg-teal-600 text-white hover:bg-teal-700'}`}
                 >
                   <BookOpen className="w-5 h-5 sm:w-6 sm:h-6" />
                   Comenzar Repaso ({filteredCards.length} tarjetas)
@@ -1643,7 +1641,7 @@ export default function BigDataStudyApp() {
               /* Sesión activa */
               <div className="space-y-4 sm:space-y-6">
                 {/* Barra de progreso */}
-                <div className={`rounded-xl shadow-sm border p-3 sm:p-4 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+                <div className={`shadow-sm border p-3 sm:p-4 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
                   <div className="flex items-center justify-between mb-2">
                     <span className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                       {currentCardIndex + 1}/{shuffledCards.length}
@@ -1653,7 +1651,7 @@ export default function BigDataStudyApp() {
                       <span className={`font-bold ${darkMode ? 'text-red-400' : 'text-red-500'}`}>✗ {incorrectCount}</span>
                     </div>
                   </div>
-                  <div className={`w-full h-2 sm:h-3 rounded-full overflow-hidden ${darkMode ? 'bg-slate-700' : 'bg-slate-100'}`}>
+                  <div className={`w-full h-2 sm:h-3 overflow-hidden ${darkMode ? 'bg-slate-700' : 'bg-slate-100'}`}>
                     <div 
                       className="h-full bg-linear-to-r from-teal-500 to-teal-600 transition-all duration-300"
                       style={{ width: `${((currentCardIndex + 1) / shuffledCards.length) * 100}%` }}
@@ -1666,18 +1664,18 @@ export default function BigDataStudyApp() {
                   <>
                     <div 
                       onClick={() => setShowFlashcardAnswer(!showFlashcardAnswer)}
-                      className={`w-full min-h-64 sm:min-h-80 rounded-xl sm:rounded-2xl shadow-lg border-2 cursor-pointer flex flex-col p-4 sm:p-6 md:p-8 transition-all hover:shadow-xl relative overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-600 hover:border-teal-500' : 'bg-white border-slate-200 hover:border-teal-300'}`}
+                      className={`w-full min-h-64 sm:min-h-80 sm:shadow-lg border-2 cursor-pointer flex flex-col p-4 sm:p-6 md:p-8 transition-all hover:shadow-xl relative overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-600 hover:border-teal-500' : 'bg-white border-slate-200 hover:border-teal-300'}`}
                     >
                       {/* Badge del tema */}
                       <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
-                        <span className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold ${darkMode ? 'bg-teal-900 text-teal-400' : 'bg-teal-100 text-teal-700'}`}>
+                        <span className={`px-2 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-bold ${darkMode ? 'bg-teal-900 text-teal-400' : 'bg-teal-100 text-teal-700'}`}>
                           {currentCard.themeName.length > 20 ? currentCard.themeName.substring(0, 18) + '...' : currentCard.themeName}
                         </span>
                       </div>
 
                       {/* Indicador de tipo */}
                       <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
-                        <span className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold ${
+                        <span className={`px-2 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-bold ${
                           currentCard.type === 'comparison' 
                             ? darkMode ? 'bg-purple-900 text-purple-400' : 'bg-purple-100 text-purple-700'
                             : darkMode ? 'bg-blue-900 text-blue-400' : 'bg-blue-100 text-blue-700'
@@ -1717,13 +1715,13 @@ export default function BigDataStudyApp() {
                       <div className="flex gap-2 sm:gap-4">
                         <button
                           onClick={markIncorrect}
-                          className={`flex-1 border-2 py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-lg transition-all flex items-center justify-center gap-1 sm:gap-2 ${darkMode ? 'bg-red-900/30 border-red-700 text-red-400 hover:bg-red-900/50' : 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100'}`}
+                          className={`flex-1 border-2 py-3 sm:py-4 font-bold text-sm sm:text-lg transition-all flex items-center justify-center gap-1 sm:gap-2 ${darkMode ? 'bg-red-900/30 border-red-700 text-red-400 hover:bg-red-900/50' : 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100'}`}
                         >
                           <span className="text-lg sm:text-2xl">😓</span> <span className="hidden sm:inline">No lo sabía</span><span className="sm:hidden">No</span>
                         </button>
                         <button
                           onClick={markCorrect}
-                          className={`flex-1 border-2 py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-lg transition-all flex items-center justify-center gap-1 sm:gap-2 ${darkMode ? 'bg-green-900/30 border-green-700 text-green-400 hover:bg-green-900/50' : 'bg-green-50 border-green-200 text-green-700 hover:bg-green-100'}`}
+                          className={`flex-1 border-2 py-3 sm:py-4 font-bold text-sm sm:text-lg transition-all flex items-center justify-center gap-1 sm:gap-2 ${darkMode ? 'bg-green-900/30 border-green-700 text-green-400 hover:bg-green-900/50' : 'bg-green-50 border-green-200 text-green-700 hover:bg-green-100'}`}
                         >
                           <span className="text-lg sm:text-2xl">🎉</span> <span className="hidden sm:inline">¡Lo sabía!</span><span className="sm:hidden">Sí</span>
                         </button>
@@ -1744,7 +1742,7 @@ export default function BigDataStudyApp() {
 
             {/* Pantalla de fin de sesión */}
             {!sessionStarted && (correctCount > 0 || incorrectCount > 0) && currentCardIndex >= shuffledCards.length - 1 && shuffledCards.length > 0 && (
-              <div className={`mt-6 sm:mt-8 rounded-xl sm:rounded-2xl p-6 sm:p-8 text-white text-center ${darkMode ? 'bg-linear-to-br from-teal-600 to-teal-800' : 'bg-linear-to-br from-teal-500 to-teal-700'}`}>
+              <div className={`mt-6 sm:mt-8 sm:p-6 sm:p-8 text-white text-center ${darkMode ? 'bg-linear-to-br from-teal-600 to-teal-800' : 'bg-linear-to-br from-teal-500 to-teal-700'}`}>
                 <h3 className="text-xl sm:text-2xl font-bold mb-2">🎊 ¡Sesión completada!</h3>
                 <p className="text-sm sm:text-base opacity-90">Has repasado {correctCount + incorrectCount} tarjetas</p>
                 <div className="mt-4 sm:mt-6 text-4xl sm:text-5xl font-bold">
@@ -1768,11 +1766,10 @@ export default function BigDataStudyApp() {
             {/* Header */}
             <div className="text-center mb-4 sm:mb-6 md:mb-8">
               <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold ${darkMode ? 'text-slate-100' : 'text-slate-900'}`}>Banco de Recursos</h2>
-              <p className={`mt-1 sm:mt-2 text-xs sm:text-sm md:text-base ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Glosario + Comandos + Mapa mental</p>
             </div>
 
             {/* GLOSARIO TEMA 1 */}
-            <div className={`glossary-card rounded-lg sm:rounded-xl shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+            <div className={`glossary-card sm:shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
               <div className={`px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base ${darkMode ? 'bg-teal-700 text-white' : 'bg-teal-600 text-white'}`}>TEMA 1 · BIG DATA</div>
               <div className="p-2 sm:p-4 overflow-x-auto">
                 <table className="w-full text-xs sm:text-sm min-w-96">
@@ -1795,7 +1792,7 @@ export default function BigDataStudyApp() {
             </div>
 
             {/* GLOSARIO TEMA 2 */}
-            <div className={`glossary-card rounded-lg sm:rounded-xl shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+            <div className={`glossary-card sm:shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
               <div className="bg-blue-600 text-white px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base">TEMA 2 · ARQUITECTURAS</div>
               <div className="p-2 sm:p-4 overflow-x-auto">
                 <table className="w-full text-xs sm:text-sm min-w-96">
@@ -1819,7 +1816,7 @@ export default function BigDataStudyApp() {
             </div>
 
             {/* GLOSARIO TEMA 3 */}
-            <div className={`glossary-card rounded-lg sm:rounded-xl shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+            <div className={`glossary-card sm:shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
               <div className="bg-orange-600 text-white px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base">TEMA 3 · HADOOP</div>
               <div className="p-2 sm:p-4 overflow-x-auto">
                 <table className="w-full text-xs sm:text-sm min-w-96">
@@ -1844,7 +1841,7 @@ export default function BigDataStudyApp() {
             </div>
 
             {/* GLOSARIO TEMA 4 */}
-            <div className={`glossary-card rounded-lg sm:rounded-xl shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+            <div className={`glossary-card sm:shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
               <div className="bg-purple-600 text-white px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base">TEMA 4 · BASES DE DATOS</div>
               <div className="p-2 sm:p-4 overflow-x-auto">
                 <table className="w-full text-xs sm:text-sm min-w-96">
@@ -1864,7 +1861,7 @@ export default function BigDataStudyApp() {
             </div>
 
             {/* GLOSARIO TEMA 5 */}
-            <div className={`glossary-card rounded-lg sm:rounded-xl shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+            <div className={`glossary-card sm:shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
               <div className="bg-rose-600 text-white px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base">TEMA 5 · HIVE</div>
               <div className="p-2 sm:p-4 overflow-x-auto">
                 <table className="w-full text-xs sm:text-sm min-w-96">
@@ -1885,7 +1882,7 @@ export default function BigDataStudyApp() {
             </div>
 
             {/* BANCO DE COMANDOS */}
-            <div className={`rounded-lg sm:rounded-xl overflow-hidden shadow-lg sm:shadow-2xl ${darkMode ? 'bg-slate-950' : 'bg-slate-900'}`}>
+            <div className={`sm:overflow-hidden shadow-lg sm:shadow-2xl ${darkMode ? 'bg-slate-950' : 'bg-slate-900'}`}>
               <div className={`px-3 sm:px-6 py-2 sm:py-3 font-bold text-white text-xs sm:text-sm md:text-base ${darkMode ? 'bg-slate-900' : 'bg-slate-800'}`}>COMANDOS RÁPIDOS</div>
               <div className="p-3 sm:p-6 font-mono text-[10px] sm:text-xs md:text-sm space-y-4 sm:space-y-6 overflow-x-auto">
                 
@@ -1975,7 +1972,7 @@ export default function BigDataStudyApp() {
             </div>
 
             {/* MAPA MENTAL */}
-            <div className={`glossary-card rounded-lg sm:rounded-xl shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
+            <div className={`glossary-card sm:shadow-sm border overflow-hidden ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`}>
               <div className="bg-slate-700 text-white px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base">MAPA MENTAL</div>
               <div className="p-3 sm:p-6 overflow-x-auto">
                 <pre className={`text-[10px] sm:text-xs md:text-sm font-mono leading-relaxed whitespace-pre ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>{`BigData
@@ -1998,13 +1995,13 @@ export default function BigDataStudyApp() {
             </div>
 
             {/* FRASES CLAVE */}
-            <div className={`rounded-lg sm:rounded-xl border-2 overflow-hidden ${darkMode ? 'bg-yellow-900/30 border-yellow-600' : 'bg-yellow-50 border-yellow-400'}`}>
+            <div className={`sm:border-2 overflow-hidden ${darkMode ? 'bg-yellow-900/30 border-yellow-600' : 'bg-yellow-50 border-yellow-400'}`}>
               <div className={`px-3 sm:px-6 py-2 sm:py-3 font-bold text-xs sm:text-sm md:text-base ${darkMode ? 'bg-yellow-700 text-yellow-100' : 'bg-yellow-400 text-yellow-900'}`}>🔑 FRASES CLAVE</div>
               <div className="p-3 sm:p-6 space-y-2 sm:space-y-3">
-                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Si no empieza por <code className={`px-0.5 sm:px-1 rounded text-[10px] sm:text-xs ${darkMode ? 'bg-yellow-800' : 'bg-yellow-200'}`}>hdfs dfs</code>, estoy en local.&quot;</p>
+                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Si no empieza por <code className={`px-0.5 sm:px-1 text-[10px] sm:text-xs ${darkMode ? 'bg-yellow-800' : 'bg-yellow-200'}`}>hdfs dfs</code>, estoy en local.&quot;</p>
                 <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Hive no guarda datos, guarda metadatos.&quot;</p>
                 <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Tabla interna borra datos, externa no.&quot;</p>
-                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Si <code className={`px-0.5 sm:px-1 rounded text-[10px] sm:text-xs ${darkMode ? 'bg-yellow-800' : 'bg-yellow-200'}`}>COUNT(*)</code> da 0, algo está mal antes del SQL.&quot;</p>
+                <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Si <code className={`px-0.5 sm:px-1 text-[10px] sm:text-xs ${darkMode ? 'bg-yellow-800' : 'bg-yellow-200'}`}>COUNT(*)</code> da 0, algo está mal antes del SQL.&quot;</p>
                 <p className={`text-xs sm:text-sm font-medium ${darkMode ? 'text-yellow-200' : 'text-yellow-900'}`}>• &quot;Primero datos, luego tablas, luego consultas.&quot;</p>
               </div>
             </div>
